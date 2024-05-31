@@ -11,8 +11,9 @@ data/data_kg/
 data/etc/cc.en.300.bin
 data/raw/
 
+baselines/
+examples/
 results/
 
-__misc__/
 .vscode/
 visualization/

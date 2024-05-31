@@ -93,8 +93,6 @@ def _run_search_carte(estimator, X_train, y_train, params):
     duration = round(end_time - start_time, 4)
 
     # Statistics
-    # gap = np.array(estimator_.valid_loss_) - np.array(estimator_.train_loss_)
-    # mask = np.where(gap > 0)[0]
     vl = np.array(estimator_.valid_loss_)
 
     # Obtain results
