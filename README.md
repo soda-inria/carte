@@ -6,6 +6,9 @@ This repository contains the implementation of the paper CARTE: Pretraining and 
 
 ## Installation
 
+<!-- - Installation of packages
+- Downloading datasets and langauge models -->
+
 ## Getting started
 
 ## Our paper
