@@ -1,9 +1,12 @@
 # CARTE: <br />Pretraining and transfer for tabular learning
 
-(Yet in construction)
+(The repo is still in construction, it will be available as soon a possible)
+
 This repository contains the implementation of CARTE: Context-Aware Representation of Table Entities.
 
 ## Installation
+
+Download FastText model at
 
 ## Getting started
 
