@@ -1,5 +1,6 @@
 # CARTE: <br />Pretraining and transfer for tabular learning
 
+(Yet in construction)
 This repository contains the implementation of CARTE: Context-Aware Representation of Table Entities.
 
 ## Installation
