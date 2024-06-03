@@ -14,7 +14,7 @@ from sklearn.utils.validation import check_is_fitted, check_random_state
 from joblib import Parallel, delayed
 from tqdm import tqdm
 
-from nn_model.carte_downstream import CARTE_NN_Model
+from src.carte_model import CARTE_NN_Model
 from configs.directory import config_directory
 
 
