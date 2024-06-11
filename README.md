@@ -19,21 +19,13 @@ This repository contains the implementation of the paper CARTE: Pretraining and 
 
 **Downloading data**
 
-- Fasttext
-- Ken Embeddings
-
 ## Getting started
 
 **Running CARTE for singletables**
 
 **Running CARTE for multitables**
-We recommend
-
-Running CARTE for multitables with number of sources under 2 is not rec
 
 ## Reproducing results of CARTE paper
-
-Under ... it contains the parameters from random search of 100 iterations. To
 
 ## Our paper
 
