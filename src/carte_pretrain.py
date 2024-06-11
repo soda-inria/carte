@@ -337,4 +337,3 @@ class CARTE_KGPretrain:
             for row in self.log_:
                 output.write(str(row) + "\n")
         print(f"Step {step-1} | Training checkpoint saved")
-

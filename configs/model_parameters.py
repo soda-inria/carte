@@ -1,5 +1,5 @@
 """
-Param distributions for hyperparameter optimization
+Parameter distributions for hyperparameter optimization
 """
 
 import numpy as np
@@ -57,7 +57,6 @@ param_distributions["bagging_temperature"] = uniform(0, 1)
 param_distributions["l2_leaf_reg"] = loguniform(1, 10)
 param_distributions["iterations"] = randint(400, 1001)
 param_distributions["one_hot_max_size"] = randint(2, 26)
-# param_distributions["random_strength"] = randint(1, 21)
 param_distributions_total["catboost"] = param_distributions
 
 # xgb

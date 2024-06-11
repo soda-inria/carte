@@ -1,19 +1,20 @@
 *.pyc
+.vscode/
 
 1.temp.py
-example_run_carte_reg.py
-example_run_carte_cls.py
 
-data/data_ds/
-data/data_ds_mt/
-data/data_ds_oov/
-data/data_kg/
+data/data_singletable/
+data/data_multitable/
+data/data_yago/
 data/etc/cc.en.300.bin
-data/raw/
+data/etc/intfloat_e5-large-v2/
+data/data_raw/
+data/ckpt/
 
-baselines/
-examples/
+src/carte_pretrain.py
+src/carte_yago_graphlet_construction.py
 results/
 
-.vscode/
-visualization/
+scripts/
+
+README.md
