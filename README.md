@@ -1,15 +1,27 @@
 # CARTE: <br />Pretraining and Transfer for Tabular Learning
 
-(The repo is still in construction, it will be available as soon a possible)
+(The repo is still under construction, it will be available as soon a possible)
 
 This repository contains the implementation of the paper CARTE: Pretraining and Transfer for Tabular Learning.
 
 ## Installation
 
+**Requried packages**
+
 <!-- - Installation of packages
 - Downloading datasets and langauge models -->
 
+**Downloading data**
+
 ## Getting started
+
+**Running CARTE pretrain**
+
+**Running CARTE for singletables**
+
+**Running CARTE for multitables**
+
+## Reproducing results
 
 ## Our paper
 

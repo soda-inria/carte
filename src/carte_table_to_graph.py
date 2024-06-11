@@ -19,6 +19,8 @@ def _create_edge_index(
     undirected: bool = True,
     self_loop: bool = True,
 ):
+    """Sets the edge_index and edge_attr for graphs."""
+
     # the list of possible edge_index (directed with the numbering)
     edge_index_ = torch.combinations(torch.arange(num_nodes), 2).transpose(0, 1)
     edge_index_ = edge_index_[:, (edge_index_[0] == 0)]
@@ -44,6 +46,17 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
     """Transformer from tables to a list of graphs.
 
     The list of graphs are generated in a row-wise fashion.
+
+    Parameters
+    ----------
+    include_edge_attr : bool, default = True
+        Indicates whether to include the edge features or not.
+    lm_model : {'fasttext', 'minhash'}, default = 'fasttext'
+        The lm_model used to initialize the features of nodes and edges.
+    n_components : int, default = 300
+        The number of components for the minhash encoder. Ignored for lm_model='fasttext'
+    n_jobs : : int, default=1
+        Number of jobs to run in parallel for minhash encoder.
     """
 
     def __init__(
@@ -188,6 +201,8 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
             )
 
     def _transform_numerical(self, X):
+        """Transform numerical columns using powertransformer"""
+
         X_num = X.copy()
         if self.is_fitted_ == False:
             X_num = self.num_transformer_.fit_transform(X_num)
@@ -196,6 +211,8 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         return X_num
 
     def _transform_names(self, names_total):
+        """Obtain the feature for a given list of string values"""
+
         if self.lm_model == "fasttext":
             name_attr_total = [
                 self.lm_model_.get_sentence_vector(i) for i in names_total
@@ -218,6 +235,28 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         y,
         idx,
     ):
+        """Transform to graph objects.
+
+        Parameters
+        ----------
+        X_categorical : Pandas DataFrame of shape (n_samples, n_categorical_features)
+            The input pandas DataFrame containing only the categorical features.
+        X_numerical : Pandas DataFrame of shape (n_samples, n_numerical_features)
+            The input pandas DataFrame containing only the numerical features.
+        name_attr_total : Numpy array of shape (n_words, n_dim_fasttext)
+            The features of each word (or sentence) in the name_dict.
+        name_dict : List of shape (n_words,)
+            Total list of words (or sentences) that the data contains.
+        y : array-like of shape (n_samples,)
+            The target variable to try to predict.
+        idx: int
+            The index of a particular data point used to transform into graphs
+
+        Returns
+        -------
+        Graph : Graph object
+            The graph object from torch_geometric
+        """
 
         # Obtain the data for a 'idx'-th row
         data_cat = X_categorical.iloc[idx]

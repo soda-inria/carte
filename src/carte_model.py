@@ -219,11 +219,11 @@ class CARTE_Contrast(nn.Module):
         x = nn.functional.normalize(x, dim=1)
 
         # Cosine similarity
-        # x = 1 - (torch.cdist(x, x) / 2)
+        x = 1 - (torch.cdist(x, x) / 2)
 
         # RBF kernel (Gaussian similarity)
-        sig = torch.median(torch.cdist(x, x))
-        x = torch.exp(-(torch.cdist(x, x) / (2 * sig)))
+        # sig = torch.median(torch.cdist(x, x))
+        # x = torch.exp(-(torch.cdist(x, x) / (2 * sig)))
 
         return x
 
@@ -364,6 +364,56 @@ class CARTE_NN_Model(nn.Module):
         )
 
         x = self.ft_base(x, edge_index, edge_attr)
+        x = x[head_idx, :]
+        x = self.ft_classifier(x)
+
+        return x
+
+
+## CARTE - Downstream Ablation model
+class CARTE_NN_Model_Ablation(nn.Module):
+    def __init__(
+        self,
+        ablation_method: str,
+        input_dim_x: int,
+        input_dim_e: int,
+        hidden_dim: int,
+        output_dim: int,
+        num_layers: int,
+        **block_args,
+    ):
+        super(CARTE_NN_Model_Ablation, self).__init__()
+
+        self.ablation_method = ablation_method
+
+        self.ft_base = CARTE_Base(
+            input_dim_x=input_dim_x,
+            input_dim_e=input_dim_e,
+            hidden_dim=hidden_dim,
+            num_layers=num_layers,
+            **block_args,
+        )
+
+        self.ft_classifier = nn.Sequential(
+            nn.Linear(hidden_dim, int(hidden_dim / 2)),
+            nn.ReLU(),
+            nn.LayerNorm(int(hidden_dim / 2)),
+            nn.Linear(int(hidden_dim / 2), int(hidden_dim / 4)),
+            nn.ReLU(),
+            nn.LayerNorm(int(hidden_dim / 4)),
+            nn.Linear(int(hidden_dim / 4), output_dim),
+        )
+
+    def forward(self, input):
+        x, edge_index, edge_attr, head_idx = (
+            input.x.clone(),
+            input.edge_index.clone(),
+            input.edge_attr.clone(),
+            input.ptr[:-1],
+        )
+
+        if "exclude-attention" not in self.ablation_method:
+            x = self.ft_base(x, edge_index, edge_attr)
         x = x[head_idx, :]
         x = self.ft_classifier(x)
 

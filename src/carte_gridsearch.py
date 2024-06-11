@@ -23,8 +23,8 @@ def carte_gridsearch(
 
     Parameters
     ----------
-    estimator : CARTEGNN estimator
-        The CARTEGNN estimator used for grid search
+    estimator : CARTE estimator
+        The CARTE estimator used for grid search
     X_train : list
         The list of graph objects for the train data transformed using Table2GraphTransformer
     y_train : numpy array of shape (n_samples,)
@@ -44,7 +44,7 @@ def carte_gridsearch(
     best_params : dict
         The dictionary of best parameters obtained through grid search.
     best_estimator : CARTEGNN estimator
-        The CARTEGNN estimator trained using the best_params if refit is set to True.
+        The CARTE estimator trained using the best_params if refit is set to True.
     """
     # Set paramater list
     param_distributions_ = param_distributions.copy()
@@ -101,7 +101,7 @@ def _run_search_carte(estimator, X_train, y_train, params):
         for i in range(estimator_.num_model)
     }
     result_run["params"] = str(params)
-    result_run["score"] = np.mean(vl)  # - 2.1 * np.std(vl)
+    result_run["score"] = np.mean(vl)
     result_run["fit_time"] = duration
 
     result_df = pd.DataFrame([result_run])
