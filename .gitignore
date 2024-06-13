@@ -13,8 +13,12 @@ data/ckpt/
 
 src/carte_pretrain.py
 src/carte_yago_graphlet_construction.py
-results/
+
+results/compiled_results/results_carte_baseline_singletable.csv
+results/singletable/
+
 
 scripts/
 
 README.md
+requirements-optional.txt

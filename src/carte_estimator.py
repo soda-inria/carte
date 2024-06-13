@@ -874,7 +874,7 @@ class BaseCARTEMultitableEstimator(BaseCARTEEstimator):
 
         for _ in tqdm(
             range(1, self.max_epoch + 1),
-            desc=f"Model No. {random_state}",
+            desc=f"Model No. xx",
             disable=self.disable_pbar,
         ):
 

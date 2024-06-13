@@ -10,7 +10,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import PowerTransformer
 from sklearn.pipeline import make_pipeline
 from configs.directory import config_directory
-from dirty_cat import MinHashEncoder  # change to skrubs
+from skrub import MinHashEncoder  # change to skrub
 
 
 def _create_edge_index(

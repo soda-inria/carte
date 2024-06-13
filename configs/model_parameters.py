@@ -4,7 +4,7 @@ Parameter distributions for hyperparameter optimization
 
 import numpy as np
 from scipy.stats import loguniform, randint, uniform, norm
-
+import copy
 
 class loguniform_int:
     """Integer valued version of the log-uniform distribution"""
@@ -137,34 +137,12 @@ param_distributions_total["logistic"] = param_distributions
 param_distributions = dict()
 param_distributions_total["tabpfn"] = param_distributions
 
-# carte-multitable
-param_distributions = dict()
-lr_grid = []
-lr_ = [1e-4, 1e-3]
-for x in lr_:
-    lr_grid += list(np.array([1, 5]) * x)
-param_distributions["learning_rate"] = lr_grid
-param_distributions["dropout"] = [0, 0.2]
-param_distributions_total["carte-multitable"] = param_distributions
-
 # catboost-multitable
-param_distributions = dict()
-param_distributions["max_depth"] = randint(2, 7)
-param_distributions["learning_rate"] = loguniform(1e-5, 1)
-param_distributions["bagging_temperature"] = uniform(0, 1)
-param_distributions["l2_leaf_reg"] = loguniform(1, 10)
-param_distributions["random_strength"] = randint(1, 21)
-param_distributions["one_hot_max_size"] = randint(2, 26)
-param_distributions["iterations"] = randint(400, 1001)
+param_distributions = copy.deepcopy(param_distributions_total["catboost"])
 param_distributions["source_fraction"] = uniform(0, 1)
 param_distributions_total["catboost-multitable"] = param_distributions
 
 # histgb-multitable
-param_distributions = dict()
-param_distributions["learning_rate"] = loguniform(1e-2, 10)
-param_distributions["max_depth"] = [None, 2, 3, 4]
-param_distributions["max_leaf_nodes"] = norm_int(31, 5)
-param_distributions["min_samples_leaf"] = norm_int(20, 2)
-param_distributions["l2_regularization"] = loguniform(1e-6, 1e3)
+param_distributions = copy.deepcopy(param_distributions_total["histgb"])
 param_distributions["source_fraction"] = uniform(0, 1)
 param_distributions_total["histgb-multitable"] = param_distributions

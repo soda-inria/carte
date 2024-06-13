@@ -9,23 +9,44 @@ This repository contains the implementation of the paper CARTE: Pretraining and 
 
 ## Installation
 
-**Requried packages**
+Create a new environment with python 3.10, and install the requirements with the requirements.txt file on your environment:
 
-<!-- - Installation of packages
-- Downloading datasets and langauge models
-- Only for CARTE:
-- Optional:
--->
+```
+git clone https://github.com/soda-inria/carte
+cd carte
+conda env create -n <env_name> python=3.10
+conda activate <env_name>
+pip install -r requirements.txt
+```
+
+To reproduce the results presented in our paper install additional requirements with optional-requirements.txt file on your environment:
+
+```
+pip install -r requirements-optional.txt
+```
 
 **Downloading data**
 
+- FastText embeddings: <br/> CARTE uses FastText embeddings which first need to be downloaded in your machine. After setting up the environment,
+
+- Benchmark datasets: <br/>
+  The datasets used in our paper can be downloaded
+
+- Large language models: <br/>
+
+- KEN embeddings: <br/>
+
 ## Getting started
 
-**Running CARTE for singletables**
+The best way to get familiar with using CARTE is through the examples.
 
-**Running CARTE for multitables**
+**Running CARTE for singletables:** <br/>follow through examples/carte_single_tables.ipynb
+
+**Running CARTE for multitables:** <br/>follow through examples/carte_joint_learning.ipynb
 
 ## Reproducing results of CARTE paper
+
+We provide the searched parameters for the baselines used for comparisons. Currently, we
 
 ## Our paper
 
