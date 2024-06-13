@@ -1,0 +1,5 @@
+catboost==1.2.5
+seaborn==0.13.2
+scikit-posthocs==0.9.0
+tabpfn==0.1.10
+xgboost==2.0.3
