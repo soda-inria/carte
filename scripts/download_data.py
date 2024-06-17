@@ -48,7 +48,7 @@ def _download_raw(option="carte"):
         with ZipFile(download_path, 'r') as zObject:
             for name in carte_example_data:
                 raw_data_path = f"data_raw/{name}.csv"
-                zObject.extract(raw_data_path, path=f"{config_directory['data_raw']}/{name}.csv")
+                zObject.extract(raw_data_path, path=f"{config_directory['data']}")
     elif option == "full":
         with ZipFile(download_path, 'r') as zObject:
             zObject.extractall(path=config_directory["data"]) 
@@ -73,7 +73,7 @@ def _download_preprocessed(option="carte", include_llm=False):
                 zObject.extract(config_path, path=f"{config_directory['data']}")
                 if include_llm:
                     external_path = f"data_singletable/{name}/external.pickle"
-                    zObject.extract(external_path, path=f"{config_directory['data_singletable']}/{name}/external.pickle")
+                    zObject.extract(external_path, path=f"{config_directory['data']}")
     elif option == "full":
         with ZipFile(download_path, 'r') as zObject:
             zObject.extractall(path=config_directory["data"]) 
