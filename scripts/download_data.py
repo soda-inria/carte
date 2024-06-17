@@ -84,7 +84,7 @@ def _download_preprocessed(option="carte", include_llm=False):
 # Main
 def main(option = "carte", include_raw = False, include_ken = False):
 
-    if not os.path.exists(config_directory["fasttext"]):
+    if os.path.exists(config_directory["fasttext"]):
         pass
     else:
         _download_fasttext()
