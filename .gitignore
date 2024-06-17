@@ -17,8 +17,8 @@ src/carte_yago_graphlet_construction.py
 results/compiled_results/results_carte_baseline_singletable.csv
 results/singletable/
 
+scripts/compile_results_singletable
+scripts/evaluate_multitable.py
+scripts/evaluate_singletable.py
+scripts/evaluate.sh
 
-scripts/
-
-README.md
-requirements-optional.txt
