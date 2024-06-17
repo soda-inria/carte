@@ -69,8 +69,8 @@ def _download_preprocessed(option="carte", include_llm=False):
             for name in carte_example_data:
                 raw_data_path = f"data_singletable/{name}/raw.parquet"
                 config_path = f"data_singletable/{name}/config_data.json"
-                zObject.extract(raw_data_path, path=f"{config_directory['data_singletable']}/{name}/raw.parquet")
-                zObject.extract(config_path, path=f"{config_directory['data_singletable']}/{name}/config_data.json")
+                zObject.extract(raw_data_path, path=f"{config_directory['data']}")
+                zObject.extract(config_path, path=f"{config_directory['data']}")
                 if include_llm:
                     external_path = f"data_singletable/{name}/external.pickle"
                     zObject.extract(external_path, path=f"{config_directory['data_singletable']}/{name}/external.pickle")
