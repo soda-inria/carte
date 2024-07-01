@@ -639,9 +639,9 @@ def main(data_name, num_train, method, random_state, bagging, device):
 
     # Depending on the specific machine or computing environment, you may want to parallelize the evaluation.
     for args in args_list:
+        run_model(**args)
         marker = f"{args['data_name']}_{args['method']}_num_train-{args['num_train']}_rs-{args['random_state']}"
         print(marker + " is complete")
-        run_model(**args)
 
 
 if __name__ == "__main__":
