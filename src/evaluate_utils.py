@@ -5,7 +5,7 @@ import pandas as pd
 from ast import literal_eval
 from sklearn.metrics import (
     r2_score,
-    mean_squared_error,
+    root_mean_squared_error,
     roc_auc_score,
     average_precision_score,
 )
@@ -126,7 +126,7 @@ def return_score(y_target, y_pred, task):
 
     if task == "regression":
         score_r2 = r2_score(y_target, y_pred)
-        score_rmse = mean_squared_error(y_target, y_pred, squared=False)
+        score_rmse = root_mean_squared_error(y_target, y_pred)
         return score_r2, score_rmse
     else:
         score_auc = roc_auc_score(y_target, y_pred)

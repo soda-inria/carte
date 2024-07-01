@@ -6,6 +6,7 @@ import numpy as np
 from scipy.stats import loguniform, randint, uniform, norm
 import copy
 
+
 class loguniform_int:
     """Integer valued version of the log-uniform distribution"""
 
@@ -32,7 +33,6 @@ class norm_int:
 
 
 param_distributions_total = dict()
-
 
 # carte-gnn
 param_distributions = dict()

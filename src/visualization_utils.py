@@ -1,7 +1,9 @@
 """
-Functions that can be utilized for visualization
+Functions that can be utilized for visualization. 
+For Critical difference diagram, it modifies some of the codes from scikit-posthocs.
 """
 
+import pandas as pd
 import numpy as np
 from typing import Union, List, Tuple, Dict, Set
 from matplotlib import colors
@@ -11,10 +13,11 @@ from matplotlib.colors import ListedColormap
 from matplotlib import pyplot
 from pandas import DataFrame, Series
 from seaborn import heatmap
+from configs.carte_configs import carte_singletable_baseline_mapping
+from configs.directory import config_directory
 
 
-
-
+# Normalization function of the results
 def _normalize(group):
     min_score = group["score"].min()
     max_score = group["score"].max()
@@ -22,35 +25,19 @@ def _normalize(group):
     return group
 
 
-def prepare_result(
-    task, models="all", normalize=True, cut_ni=True, ranking="all", rank_at=2048
-):
+# Prepare dataframe suitable for the learning curves
+def prepare_result(task, models="all", rank_at=2048):
 
     # load result
-    result_dir = f"{config_directory['results']}/_overall/df_score_singletable.csv"
+    result_dir = f"{config_directory['results']}/compiled_results/results_carte_baseline_singletable.csv"
     df_score = pd.read_csv(result_dir)
 
     # control for not important values
-    if cut_ni:
-        mask_cls = df_score["task"] == "classification"
-        temp = df_score["score"].copy()
-        temp[np.logical_and(mask_cls, temp < 0.5)] = 0.5
-        temp[np.logical_and(~mask_cls, temp < 0)] = 0
-        df_score["score"] = temp
-    else:
-        pass
-
-    # if task == "regression":
-    #     cut_ni_threshold = 0
-    # else:
-    #     cut_ni_threshold = 0.5
-    # if cut_ni:
-    #     temp = df_score["score"].copy()
-    #     mask = temp < cut_ni_threshold
-    #     temp[mask] = cut_ni_threshold
-    #     df_score["score"] = temp
-    # else:
-    #     pass
+    mask_cls = df_score["task"] == "classification"
+    temp = df_score["score"].copy()
+    temp[np.logical_and(mask_cls, temp < 0.5)] = 0.5
+    temp[np.logical_and(~mask_cls, temp < 0)] = 0
+    df_score["score"] = temp
 
     # select results based on task
     mask = df_score["task"] == task
@@ -64,21 +51,20 @@ def prepare_result(
         df_score = df_score[mask]
         df_score.reset_index(drop=True, inplace=True)
 
-    # Control for normalization of scores
-    if normalize:
-        df_normalized = df_score.groupby(["data_name"], group_keys=True).apply(
-            _normalize
-        )
-        df_normalized.reset_index(drop=True, inplace=True)
-    else:
-        df_normalized = df_score.copy()
-        df_normalized["normalized_score"] = df_normalized["score"].copy()
+    # Change the names of models for clarity
+    temp = df_score["model"].copy()
+    for key in carte_singletable_baseline_mapping:
+        temp = temp.str.replace(key, carte_singletable_baseline_mapping[key])
+    df_score["model"] = temp.copy()
+
+    # Apply normalization on scores
+    df_normalized = df_score.groupby(["data_name"], group_keys=True).apply(_normalize)
+    df_normalized.reset_index(drop=True, inplace=True)
 
     # Ranking
-    if ranking == "all":
-        rank_order = None
-    elif ranking == "at":
-        mask = df_normalized["num_train"] == rank_at
+    if rank_at == "all":
+        temp = df_normalized["num_train"].astype(float)
+        mask = temp <= max(temp)
         df_normalized_ = df_normalized[mask].copy()
         avg_rank = (
             df_normalized_.groupby("model")
@@ -88,8 +74,7 @@ def prepare_result(
         avg_rank = avg_rank.sort_values()
         rank_order = avg_rank.index.tolist()
     else:
-        temp = df_normalized["num_train"].astype(float)
-        mask = temp <= rank_at
+        mask = df_normalized["num_train"] == rank_at
         df_normalized_ = df_normalized[mask].copy()
         avg_rank = (
             df_normalized_.groupby("model")
@@ -105,6 +90,8 @@ def prepare_result(
 
     return df_normalized, rank_order
 
+
+# Generate dataframe suitable for creating critical difference diagram
 def generate_df_cdd(df_normalized, train_size="all"):
 
     # Set the base df
@@ -119,20 +106,15 @@ def generate_df_cdd(df_normalized, train_size="all"):
 
     # select the train_size for comparison
     if train_size == "all":
-        pass
+        return df_cdd
     else:
         mask = df_cdd["num_train"].str.contains(f"{train_size}")
         df_cdd = df_cdd[mask].copy()
-
-    # df_cdd.drop(columns=["random_state", "num_train", "data_name"], inplace=True)
-
-    return df_cdd
+        df_cdd.reset_index(drop=True, inplace=True)
+        return df_cdd
 
 
-
-###############
-
-
+# Sign array for scikit-posthoc
 def sign_array(p_values: Union[List, np.ndarray], alpha: float = 0.05) -> np.ndarray:
 
     p_values = np.array(p_values)
@@ -143,6 +125,7 @@ def sign_array(p_values: Union[List, np.ndarray], alpha: float = 0.05) -> np.nda
     return p_values
 
 
+# Sign table for scikit-posthoc
 def sign_table(
     p_values: Union[List, np.ndarray, DataFrame], lower: bool = True, upper: bool = True
 ) -> Union[DataFrame, np.ndarray]:
@@ -176,6 +159,7 @@ def sign_table(
     return pv
 
 
+# Sign plot for scikit-posthoc
 def sign_plot(
     x: Union[List, np.ndarray, DataFrame],
     g: Union[List, np.ndarray] = None,
@@ -424,11 +408,12 @@ def critical_difference_diagram(
         for x in label_temp:
             if len(x.split(" ")) != 1:
                 temp = x.split(" ")
-                temp = (" ").join([rf"$\bf{x}$" for x in temp])
+                temp = (" ").join([r"$\bf\{" + f"{x}" + r"}$" for x in temp])
                 label_.append(temp)
             else:
-                label_.append(rf"$\bf{x}$")
+                label_.append(r"$\bf\{" + f"{x}" + r"}$")
         label_ = ("-").join(label_)
+        label_ = label_.replace("\\{", "{")
         return label_
 
     def plot_items(points, xpos, label_fmt, color_palette, line_style, label_props):

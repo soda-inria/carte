@@ -1,8 +1,9 @@
-# Download data
+# Download data. See README for information on the variables.
 
-OPTIONS=("basic_examples")
-INCLUDE_RAW=("False")
-INCLUDE_KEN=("False")
+ENV_NAME="ENV_NAME"  # Change the environment name accordingly
+OPTIONS="basic_examples" 
+INCLUDE_RAW="False"
+INCLUDE_KEN="False"
 
-conda run -n carte_test python -W ignore scripts/download_data.py -op ${OPTIONS[@]} -ir ${INCLUDE_RAW[@]} -ik ${INCLUDE_KEN[@]}
+conda run -n $ENV_NAME python -W ignore scripts/download_data.py -op $OPTIONS -ir $INCLUDE_RAW -ik $INCLUDE_KEN
 

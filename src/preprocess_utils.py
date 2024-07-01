@@ -64,7 +64,7 @@ def extract_llm_features(
     # Load LLM Model
     from sentence_transformers import SentenceTransformer
 
-    lm_model = SentenceTransformer(config_directory["infloat-v2"], device=device)
+    lm_model = SentenceTransformer("intfloat/e5-large-v2", device=device)
 
     # Original data
     data_ = data.copy()
@@ -73,7 +73,9 @@ def extract_llm_features(
     # Entity Names
     ent_names = _clean_entity_names(data_[extract_col_name].copy())
     ent_names = ent_names.astype(str)
-    ent_names = "query: " + ent_names # following the outlined procedure using "query: "
+    ent_names = (
+        "query: " + ent_names
+    )  # following the outlined procedure using "query: "
     ent_names = list(ent_names)
 
     # Data for entity names
@@ -126,7 +128,7 @@ def table2llmfeatures(
     # Load LLM Model
     from sentence_transformers import SentenceTransformer
 
-    lm_model = SentenceTransformer(config_directory["infloat-v2"], device=device)
+    lm_model = SentenceTransformer("intfloat/e5-large-v2", device=device)
 
     # Preprocessing for the strings (subject to specifics of the data)
     data = data.replace("\n", " ", regex=True)
@@ -144,7 +146,9 @@ def table2llmfeatures(
     for idx in range(num_data):
         data_ = data_x_cat.iloc[idx]
         sentence = _serialize_instance(data_)
-        sentence = "query: " + sentence # following the outlined procedure using "query: "
+        sentence = (
+            "query: " + sentence
+        )  # following the outlined procedure using "query: "
         sentences.append(sentence)
 
     X_categorical = lm_model.encode(sentences, convert_to_numpy=True)

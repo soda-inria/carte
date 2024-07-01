@@ -1,12 +1,12 @@
 """Script for preprocessing raw data."""
 
 # >>>
-if __name__ == '__main__':
+if __name__ == "__main__":
     import os
     import sys
 
     _project_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    os.environ['PROJECT_DIR'] = _project_dir
+    os.environ["PROJECT_DIR"] = _project_dir
     sys.path.append(_project_dir)
     del _project_dir
 # <<<
@@ -34,11 +34,11 @@ def _drop_single_unique(data):
     return data.drop(columns=num_unique_cols)
 
 
-def _load_raw_data(data_name, file_type="csv", sep=','):
+def _load_raw_data(data_name, file_type="csv", sep=","):
     """Load the raw data for preprocessing."""
     data_dir = f"{config_directory['data_raw']}/{data_name}.{file_type}"
     if file_type == "csv":
-        data = pd.read_csv(data_dir, sep)
+        data = pd.read_csv(data_dir, sep=sep)
     elif file_type == "json":
         data_file = open(data_dir)
         data = []
@@ -372,7 +372,9 @@ def preprocess_data(data_name):
         data.drop(columns=drop_col, inplace=True)
         data["club_jersey_number"] = data["club_jersey_number"].astype("str")
         data["club_jersey_number"] = data["club_jersey_number"].str.split(".").str[0]
-        data["club_contract_valid_until"] = data["club_contract_valid_until"].astype("str")
+        data["club_contract_valid_until"] = data["club_contract_valid_until"].astype(
+            "str"
+        )
         data["club_contract_valid_until"] = (
             data["club_contract_valid_until"].str.split(".").str[0]
         )
@@ -546,11 +548,15 @@ def preprocess_data(data_name):
         temp = temp.astype("float")
         data["Award"] = temp
         data.rename(columns={"WebsiteUrl": "Website_Url"}, inplace=True)
-        data.rename(columns={"FacilitiesAndServices": "Facilities_And_Services"}, inplace=True)
+        data.rename(
+            columns={"FacilitiesAndServices": "Facilities_And_Services"}, inplace=True
+        )
         data.rename(columns={"PhoneNumber": "Phone_Number"}, inplace=True)
         data = _drop_high_null(data)
         data = _drop_single_unique(data)
-        data["Facilities_And_Services"] = data["Facilities_And_Services"].str.replace(",", ", ")
+        data["Facilities_And_Services"] = data["Facilities_And_Services"].str.replace(
+            ",", ", "
+        )
         drop_col = []
         drop_col.append("Phone_Number")
         drop_col.append("Url")
@@ -779,7 +785,9 @@ def preprocess_data(data_name):
         temp = data["Date_Introduced_to_Market"].copy()
         temp = temp.str.split("-").str[0]
         data["Date_Introduced_to_Market"] = temp
-        data.dropna(subset=["Drug_Product_Description", "WAC_at_Introduction"], inplace=True)
+        data.dropna(
+            subset=["Drug_Product_Description", "WAC_at_Introduction"], inplace=True
+        )
         data.reset_index(drop=True, inplace=True)
         data.dropna(subset=target_name, inplace=True)
         data.reset_index(drop=True, inplace=True)
@@ -1001,7 +1009,9 @@ def preprocess_data(data_name):
         data.rename(columns={"milage": "mileage"}, inplace=True)
         data["model_year"] = data["model_year"].astype(str)
         temp = data["mileage"].copy()
-        temp = temp.str.replace(" mi.", "", regex=False).str.replace(",", "", regex=False)
+        temp = temp.str.replace(" mi.", "", regex=False).str.replace(
+            ",", "", regex=False
+        )
         temp = temp.astype(float)
         data["mileage"] = temp
         temp = data["price"].copy()
@@ -1170,6 +1180,7 @@ def preprocess_data(data_name):
         data = _drop_single_unique(data)
         drop_col = []
         drop_col.append("Unnamed:_0")
+        drop_col.append("Rating")
         data.drop(columns=drop_col, inplace=True)
         data["ABV"] = data["ABV"].str[:-1]
         data["ABV"] = data["ABV"].astype(float)
@@ -1193,7 +1204,7 @@ def preprocess_data(data_name):
         temp = data["vintage"].copy()
         temp[temp == "nan"] = np.nan
         data["vintage"] = temp
-        data["volume"] = data["volume"]*1000
+        data["volume"] = data["volume"] * 1000
         data = _drop_high_null(data)
         data = _drop_single_unique(data)
     elif data_name == "wine_dot_com_prices":
@@ -1398,6 +1409,7 @@ def preprocess_data(data_name):
 
     return None
 
+
 # Main
 def main(data_name_list):
 
@@ -1412,6 +1424,7 @@ def main(data_name_list):
         print(f"{data_name} complete!")
 
     return None
+
 
 if __name__ == "__main__":
 
@@ -1429,8 +1442,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args.data_name_list)
-
-
-
-
-

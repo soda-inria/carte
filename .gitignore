@@ -1,24 +1,18 @@
-*.pyc
-.vscode/
-
-1.temp.py
-
-data/data_singletable/
+# Data
 data/data_multitable/
+data/data_singletable/
+data/data_raw/
 data/data_yago/
 data/etc/cc.en.300.bin
-data/etc/intfloat_e5-large-v2/
-data/data_raw/
-data/ckpt/
 
-src/carte_pretrain.py
-src/carte_yago_graphlet_construction.py
-
-results/compiled_results/results_carte_baseline_singletable.csv
+# Results
 results/singletable/
 
-scripts/compile_results_singletable
-scripts/evaluate_multitable.py
-scripts/evaluate_singletable.py
-scripts/evaluate.sh
+# Scripts
+scripts/evaluate_singletable_slurm.py
+scripts/evaluate_singletable_slurm.sh
 
+# Misc
+*.pyc
+.vscode/
+__cache__/
