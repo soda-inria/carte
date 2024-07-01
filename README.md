@@ -109,7 +109,7 @@ The variables are:
 
 Example running the 'wina poland' dataset with train size of 128 and random state 1 in the examples:
 ```
-python scripts/download_data.py -dn "wina_pl" -nt "128" -m "reduced" -rs "1" -b "False" -dv "cpu"
+python scripts/evaluate_singletable.py -dn "wina_pl" -nt "128" -m "reduced" -rs "1" -b "False" -dv "cpu"
 ```
 Running this will create a folder `results/singletable/wina_pl`, in which the results of each baseline will be stored as a csv file.
 
