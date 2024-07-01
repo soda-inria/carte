@@ -604,9 +604,14 @@ def main(data_name, num_train, method, random_state, bagging, device):
     # Setting for methods
     if "full" in method:
         method_list = carte_singletable_baselines["full"]
-    elif "small" in method:
+    elif "reduced" in method:
         assert bagging == False
-        method_list = carte_singletable_baselines["small"]
+        method_list = carte_singletable_baselines["reduced"]
+    elif "f-r" in method:
+        method_list = set(carte_singletable_baselines["full"])
+        method_list -= set(carte_singletable_baselines["reduced"])
+        method_list = list(method_list)
+        method_list.sort()
     else:
         method_list = method
         if isinstance(method_list, list) == False:
