@@ -1,18 +1,14 @@
-# Data
+# data
 data/data_multitable/
 data/data_singletable/
 data/data_raw/
 data/data_yago/
 data/etc/cc.en.300.bin
 
-# Results
+# results
 results/singletable/
 
-# Scripts
-scripts/evaluate_singletable_slurm.py
-scripts/evaluate_singletable_slurm.sh
-
-# Misc
+# misc
 *.pyc
 .vscode/
 __cache__/
