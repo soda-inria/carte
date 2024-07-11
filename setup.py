@@ -11,7 +11,7 @@ test_requirements = []
 setup(
     author="""Myung Jun Kim, Léo Grinsztajn, Gaël Varoquaux""",
     author_email='test@gmail.com',
-    python_requires='>=3.10.13',
+    python_requires='>=3.10.12',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
@@ -43,11 +43,11 @@ setup(
     include_package_data=True,
     #package_data = {
     #    '': ['*.csv'],
-    #    'carte': ['datasets/loan/Loan_Status.csv'],
+    #    'carte': ['data/data_singletable/',"data/etc"],
     #},
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/soda-inria/carte',
-    version='0.0.1',
+    version='0.0.9',
     zip_safe=False,
 )
