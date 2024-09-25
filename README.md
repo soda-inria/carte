@@ -1,6 +1,6 @@
 # CARTE: <br />Pretraining and Transfer for Tabular Learning
 
-![CARTE_outline](data/etc/outline_carte.jpg)
+![CARTE_outline](carte_ai/data/etc/outline_carte.jpg)
 
 This repository contains the implementation of the paper CARTE: Pretraining and Transfer for Tabular Learning.
 
