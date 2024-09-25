@@ -1,1 +1,0 @@
-from carte.data.data_singletable import *
