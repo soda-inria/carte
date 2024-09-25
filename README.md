@@ -6,6 +6,11 @@ This repository contains the implementation of the paper CARTE: Pretraining and 
 
 CARTE is a pretrained model for tabular data by treating each table row as a star graph and training a graph transformer on top of this representation.
 
+## Colab Examples (Give it a test):
+* CARTERegressor on Wine Poland dataset 🎯
+* CARTEClassifier on Spotify dataset
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1PeltEmNLehQ26VQtFJhl7OxnzCS8rPMT?usp=sharing)
+
 ## Installation
 
 **Required dependencies**
