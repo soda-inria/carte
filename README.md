@@ -1,3 +1,7 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Python 3.8](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1PeltEmNLehQ26VQtFJhl7OxnzCS8rPMT?usp=sharing)
+
 # CARTE: <br />Pretraining and Transfer for Tabular Learning
 
 ![CARTE_outline](carte_ai/data/etc/outline_carte.jpg)
