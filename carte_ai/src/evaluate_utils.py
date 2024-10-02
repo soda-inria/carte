@@ -10,7 +10,7 @@ from sklearn.metrics import (
     average_precision_score,
 )
 from sklearn.model_selection import GroupShuffleSplit
-from carte.configs.directory import config_directory
+from carte_ai.configs.directory import config_directory
 
 
 def set_split(data, data_config, num_train, random_state):

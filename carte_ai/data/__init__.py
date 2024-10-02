@@ -1,1 +1,1 @@
-from carte.data.load_data import *
+from carte_ai.data.load_data import *

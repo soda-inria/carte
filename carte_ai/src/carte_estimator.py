@@ -23,8 +23,8 @@ from sklearn.utils.validation import check_is_fitted, check_random_state
 from joblib import Parallel, delayed
 from tqdm import tqdm
 from scipy.special import softmax
-from carte.src.carte_model import CARTE_NN_Model, CARTE_NN_Model_Ablation
-from carte.configs.directory import config_directory
+from carte_ai.src.carte_model import CARTE_NN_Model, CARTE_NN_Model_Ablation
+from carte_ai.configs.directory import config_directory
 
 
 class BaseCARTEEstimator(BaseEstimator):

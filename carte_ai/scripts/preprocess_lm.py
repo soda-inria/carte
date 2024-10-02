@@ -17,9 +17,9 @@ import numpy as np
 import pickle
 import json
 import os
-from carte.configs.directory import config_directory
-from carte.configs.carte_configs import carte_datalist
-from carte.src.preprocess_utils import (
+from carte_ai.configs.directory import config_directory
+from carte_ai.configs.carte_configs import carte_datalist
+from carte_ai.src.preprocess_utils import (
     extract_fasttext_features,
     extract_llm_features,
     table2llmfeatures,

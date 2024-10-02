@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-from carte.configs.directory import config_directory
+from carte_ai.configs.directory import config_directory
 
 
 def _clean_entity_names(data_entity_name):

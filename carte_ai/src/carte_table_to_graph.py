@@ -9,7 +9,7 @@ from torch_geometric.data import Data
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import PowerTransformer
 from sklearn.pipeline import make_pipeline
-from carte.configs.directory import config_directory
+from carte_ai.configs.directory import config_directory
 from skrub import MinHashEncoder  # change to skrub
 
 

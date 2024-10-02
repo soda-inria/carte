@@ -16,8 +16,8 @@ import json
 import ast
 import pandas as pd
 import numpy as np
-from carte.configs.directory import config_directory
-from carte.configs.carte_configs import carte_datalist
+from carte_ai.configs.directory import config_directory
+from carte_ai.configs.carte_configs import carte_datalist
 
 
 def _drop_high_null(data, proportion=0.5):

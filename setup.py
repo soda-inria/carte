@@ -6,7 +6,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 requirements = [
     "numpy", "pandas", "scipy", "scikit-learn", "skrub",
-    "torch", "torch-geometric", "torcheval", "torch_scatter","catboost","fasttext","category-encoders","tabpfn"
+    "torch", "torch-geometric", "torcheval", "torch_scatter","catboost","fasttext","category-encoders","tabpfn","xgboost",
 ]
 
 setup(
@@ -53,6 +53,6 @@ setup(
         'test': ['pytest', 'coverage'],  # Add your test requirements here
     },
     url='https://github.com/soda-inria/carte-ai',
-    version='0.0.32',
+    version='0.0.4',
     zip_safe=False,
 )
