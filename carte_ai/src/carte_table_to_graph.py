@@ -12,7 +12,6 @@ from sklearn.pipeline import make_pipeline
 from carte_ai.configs.directory import config_directory
 from skrub import MinHashEncoder  # change to skrub
 
-
 def _create_edge_index(num_nodes: int, edge_attr: torch.Tensor, undirected: bool = True, self_loop: bool = True):
     """
     Sets the edge_index and edge_attr for graphs.
@@ -51,9 +50,6 @@ def _create_edge_index(num_nodes: int, edge_attr: torch.Tensor, undirected: bool
         edge_attr_ = torch.cat((edge_attr_, torch.ones(unique_nodes.size(0), edge_attr_.size(1), dtype=edge_attr_.dtype)))
 
     return edge_index, edge_attr_
-
-
-
 
 class Table2GraphTransformer(TransformerMixin, BaseEstimator):
     """
@@ -144,7 +140,7 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         X_ = X.replace("\n", " ", regex=True)
         num_data = X_.shape[0]
 
-        y_ = torch.tensor(self.y_, dtype=torch.float32).reshape((num_data, 1)) if self.y_ is not None else None
+        y_ = torch.tensor(self.y_, dtype=torch.float16).reshape((num_data, 1)) if self.y_ is not None else None
 
         X_categorical = X_.select_dtypes(include="object").copy()
         X_categorical.columns = self.cat_col_names
@@ -217,9 +213,9 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
             Transformed features for names.
         """
         if self.lm_model == "fasttext":
-            return np.array([self.lm_model_.get_sentence_vector(name) for name in names_total], dtype=np.float32)
+            return np.array([self.lm_model_.get_sentence_vector(name) for name in names_total], dtype=np.float16)
         elif self.lm_model == "minhash":
-            return self.name_transformer.fit_transform(names_total.reshape(-1, 1)).astype(np.float32)
+            return self.name_transformer.fit_transform(names_total.reshape(-1, 1)).astype(np.float16)
 
     def _graph_construct(self, data_cat, data_num, name_attr_total, name_dict, y, idx):
         """
@@ -250,22 +246,22 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         num_cat = len(data_cat)
         num_num = len(data_num)
 
-        edge_attr_cat = np.array([name_attr_total[name_dict[col]] for col in data_cat.index], dtype=np.float32)
-        edge_attr_num = np.array([name_attr_total[name_dict[col]] for col in data_num.index], dtype=np.float32)
+        edge_attr_cat = np.array([name_attr_total[name_dict[col]] for col in data_cat.index], dtype=np.float16)
+        edge_attr_num = np.array([name_attr_total[name_dict[col]] for col in data_num.index], dtype=np.float16)
 
-        x_cat = torch.tensor(np.array([name_attr_total[name_dict[val]] for val in data_cat]), dtype=torch.float32)
-        x_num = torch.tensor(data_num.values[:, None] * edge_attr_num, dtype=torch.float32)
+        x_cat = torch.tensor(np.array([name_attr_total[name_dict[val]] for val in data_cat]), dtype=torch.float16)
+        x_num = torch.tensor(data_num.values[:, None] * edge_attr_num, dtype=torch.float16)
 
         if x_cat.size(0) == 0:
-            x_cat = torch.empty((0, self.n_components), dtype=torch.float32)
-            edge_attr_cat = torch.empty((0, self.n_components), dtype=torch.float32)
+            x_cat = torch.empty((0, self.n_components), dtype=torch.float16)
+            edge_attr_cat = torch.empty((0, self.n_components), dtype=torch.float16)
         if x_num.size(0) == 0:
-            x_num = torch.empty((0, self.n_components), dtype=torch.float32)
-            edge_attr_num = torch.empty((0, self.n_components), dtype=torch.float32)
+            x_num = torch.empty((0, self.n_components), dtype=torch.float16)
+            edge_attr_num = torch.empty((0, self.n_components), dtype=torch.float16)
 
         x = torch.cat((x_cat, x_num))
         x = torch.cat((torch.ones((1, x.size(1))), x))
-        edge_attr = torch.tensor(np.vstack((edge_attr_cat, edge_attr_num)), dtype=torch.float32)
+        edge_attr = torch.tensor(np.vstack((edge_attr_cat, edge_attr_num)), dtype=torch.float16)
 
         num_nodes = num_cat + num_num + 1
         edge_index, edge_attr = _create_edge_index(num_nodes, edge_attr, False, True)

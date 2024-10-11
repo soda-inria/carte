@@ -170,12 +170,13 @@ class BaseCARTEEstimator(BaseEstimator):
         out = model(data)  # Perform a single forward pass.
         target = data.y  # Set target
         if self.output_dim_ == 1:
-            out = out.view(-1).to(torch.float32)  # Reshape outputSet head index
-            target = target.to(torch.float32)  # Reshape target
+            out = out.view(-1).to(torch.float16)  # Reshape output and convert to float16
+            target = target.to(torch.float16)  # Convert target to float16
         loss = self.criterion_(out, target)  # Compute the loss.
         loss.backward()  # Derive gradients.
         optimizer.step()  # Update parameters based on gradients.
 
+    # Within _eval function:
     def _eval(self, model, ds_eval):
         """Run an evaluation of the input data on the input model.
 
@@ -186,8 +187,8 @@ class BaseCARTEEstimator(BaseEstimator):
             out = model(ds_eval)
             target = ds_eval.y
             if self.output_dim_ == 1:
-                out = out.view(-1).to(torch.float32)
-                target = target.to(torch.float32)
+                out = out.view(-1).to(torch.float16)  # Convert output to float16
+                target = target.to(torch.float16)  # Convert target to float16
             self.valid_loss_metric_.update(out, target)
             loss_eval = self.valid_loss_metric_.compute()
             loss_eval = loss_eval.detach().item()
@@ -195,6 +196,7 @@ class BaseCARTEEstimator(BaseEstimator):
                 loss_eval = -1 * loss_eval
             self.valid_loss_metric_.reset()
         return loss_eval
+
 
     def _set_train_valid_split(self):
         """Train/validation split for the bagging strategy.

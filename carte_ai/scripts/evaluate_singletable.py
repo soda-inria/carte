@@ -295,9 +295,9 @@ def _prepare_llm(
         reduced_data_train = reduced_data_train.iloc[:, : dim_reduce + 1]
         reduced_data_test = pca.transform(X_test_llm).iloc[:, : dim_reduce + 1]
         X_train = pd.concat([reduced_data_train, X_train_], axis=1)
-        X_train = X_train.to_numpy().astype(np.float32)
+        X_train = X_train.to_numpy().astype(np.float16)
         X_test = pd.concat([reduced_data_test, X_test_], axis=1)
-        X_test = X_test.to_numpy().astype(np.float32)
+        X_test = X_test.to_numpy().astype(np.float16)
 
     return X_train, X_test, y_train, y_test
 
