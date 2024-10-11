@@ -1,16 +1,9 @@
-"""
-CARTE neural network model used for pretraining and downstream tasks.
-
-"""
-
 import math
 import torch
 import torch.nn as nn
 from typing import Tuple
 from torch import Tensor
 from torch_geometric.utils import softmax
-from torch_scatter import scatter
-
 
 ## CARTE - Attention and output calculation
 def _carte_calculate_attention(
@@ -20,9 +13,13 @@ def _carte_calculate_attention(
     attention = torch.sum(torch.mul(query[edge_index[0], :], key), dim=1)
     attention = attention / math.sqrt(query.size(1))
     attention = softmax(attention, edge_index[0])
+    
     # Generate the output
     src = torch.mul(attention, value.t()).t()
-    output = scatter(src, edge_index[0], dim=0, reduce="sum")
+    
+    # Use torch.index_add_ to replace scatter function
+    output = torch.zeros_like(query).index_add_(0, edge_index[0], src)
+    
     return output, attention
 
 
@@ -90,7 +87,7 @@ class CARTE_Attention(nn.Module):
             self.lin_key = nn.Linear(input_dim, num_heads * output_dim, bias=False)
             self.lin_value = nn.Linear(input_dim, num_heads * output_dim, bias=False)
 
-        if read_out == False:
+        if not read_out:
             self.lin_edge = nn.Linear(input_dim, output_dim)
 
         self.input_dim = input_dim
@@ -105,7 +102,7 @@ class CARTE_Attention(nn.Module):
         self.lin_query.reset_parameters()
         self.lin_key.reset_parameters()
         self.lin_value.reset_parameters()
-        if self.readout == False:
+        if not self.readout:
             self.lin_edge.reset_parameters()
 
     def forward(
@@ -130,7 +127,7 @@ class CARTE_Attention(nn.Module):
             concat=self.concat,
         )
 
-        if self.readout == False:
+        if not self.readout:
             edge_attr = self.lin_edge(edge_attr)
 
         if return_attention:
@@ -168,7 +165,7 @@ class CARTE_Block(nn.Module):
         self.norm2_x = nn.LayerNorm(input_dim)
 
         self.read_out = read_out
-        if self.read_out == False:
+        if not self.read_out:
             self.linear_net_e = nn.Sequential(
                 nn.Linear(input_dim, ff_dim),
                 nn.Dropout(dropout),
@@ -178,7 +175,6 @@ class CARTE_Block(nn.Module):
             self.norm1_e = nn.LayerNorm(input_dim)
 
         self.dropout = nn.Dropout(dropout)
-        self.gelu = nn.GELU()
 
     def forward(
         self,
@@ -189,19 +185,15 @@ class CARTE_Block(nn.Module):
         # Attention part
         attn_out_x, attn_out_e = self.g_attn(x, edge_index, edge_attr)
         x = self.dropout(attn_out_x)
-        # x = self.gelu(x)
-        # x = x + self.dropout(attn_out_x)
         x = self.norm1_x(x)
 
         # MLP part - Node
         linear_out_x = self.linear_net_x(x)
         x = self.dropout(linear_out_x)
-        # x = self.gelu(x)
-        # x = x + self.dropout(linear_out_x)
         x = self.norm2_x(x)
 
         # MLP part - Edge
-        if self.read_out == False:
+        if not self.read_out:
             edge_attr = self.linear_net_e(attn_out_e)
             edge_attr = edge_attr + self.dropout(edge_attr)
             edge_attr = self.norm1_e(edge_attr)
@@ -220,10 +212,6 @@ class CARTE_Contrast(nn.Module):
 
         # Cosine similarity
         x = 1 - (torch.cdist(x, x) / 2)
-
-        # RBF kernel (Gaussian similarity)
-        # sig = torch.median(torch.cdist(x, x))
-        # x = torch.exp(-(torch.cdist(x, x) / (2 * sig)))
 
         return x
 
@@ -276,7 +264,7 @@ class CARTE_Base(nn.Module):
                 _, _, attention = l.g_attn(x, edge_index, edge_attr, return_attention)
                 attention_maps.append(attention)
             return x, attention_maps
-        elif return_attention == False:
+        elif not return_attention:
             return x
 
 
