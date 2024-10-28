@@ -1,6 +1,6 @@
 # Download data. See README for information on the variables.
 
-ENV_NAME="ENV_NAME"  # Change the environment name accordingly
+ENV_NAME="myenv"  # Change the environment name accordingly
 OPTIONS="basic_examples" 
 INCLUDE_RAW="False"
 INCLUDE_KEN="False"

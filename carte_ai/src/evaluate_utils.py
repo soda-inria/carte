@@ -5,12 +5,12 @@ import pandas as pd
 from ast import literal_eval
 from sklearn.metrics import (
     r2_score,
-    root_mean_squared_error,
+    mean_squared_error,
     roc_auc_score,
     average_precision_score,
 )
 from sklearn.model_selection import GroupShuffleSplit
-from configs.directory import config_directory
+from carte_ai.configs.directory import config_directory
 
 
 def set_split(data, data_config, num_train, random_state):
@@ -126,7 +126,8 @@ def return_score(y_target, y_pred, task):
 
     if task == "regression":
         score_r2 = r2_score(y_target, y_pred)
-        score_rmse = root_mean_squared_error(y_target, y_pred)
+        mse = mean_squared_error(y_target, y_pred)
+        score_rmse = np.sqrt(mse)
         return score_r2, score_rmse
     else:
         score_auc = roc_auc_score(y_target, y_pred)

@@ -1,0 +1,7 @@
+# Include all parquet files in specific directories
+#recursive-include carte_ai/data/ *.parquet
+#recursive-include carte/data/ *.json
+
+
+# Include specific model and binary files
+include carte_ai/data/etc/kg_pretrained.pt

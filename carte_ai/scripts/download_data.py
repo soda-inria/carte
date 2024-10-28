@@ -15,7 +15,7 @@ import shutil
 import os
 import requests
 from zipfile import ZipFile
-from configs.directory import config_directory
+from carte_ai.configs.directory import config_directory
 
 
 def _download_with_request(url, download_path):

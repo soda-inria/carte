@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "carte-ai"
+version = "0.0.14"
+description = "CARTE-AI: Context Aware Representation of Table Entries for AI"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.10.12"
+keywords = ["carte-ai"]
+license = { text = "MIT license" }
+authors = [
+    { name = "Myung Jun Kim", email = "test@gmail.com" },
+    { name = "Léo Grinsztajn" },
+    { name = "Gaël Varoquaux" },
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX",
+    "Operating System :: Microsoft :: Windows",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "torch",
+    "torch-geometric",
+    "torcheval",
+    "catboost",
+    "fasttext",
+    "tabpfn",
+    "xgboost",
+    "category-encoders",
+]
+
+[project.urls]
+Homepage = "https://github.com/soda-inria/carte"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "coverage",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["carte_ai", "carte_ai.*"]
+
+[tool.setuptools.package-data]
+carte_ai = [
+    "data/spotify.parquet",
+    "data/wine_pl.parquet",
+    "data/wine_dot_com_prices.parquet",
+    "data/wine_vivino_price.parquet",
+    "data/spotify/config_.json",
+    "data/config_wine_pl.json",
+    "data/config_wine_dot_com_prices.json",
+    "data/config_wine_vivino_price.json",
+    "data/etc/kg_pretrained.pt",
+]

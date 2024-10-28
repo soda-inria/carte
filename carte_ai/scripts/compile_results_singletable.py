@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
 import json
 from glob import glob
-from configs.directory import config_directory
+from carte_ai.configs.directory import config_directory
 import numpy as np
 import pandas as pd
 

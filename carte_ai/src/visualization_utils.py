@@ -13,8 +13,8 @@ from matplotlib.colors import ListedColormap
 from matplotlib import pyplot
 from pandas import DataFrame, Series
 from seaborn import heatmap
-from configs.carte_configs import carte_singletable_baseline_mapping
-from configs.directory import config_directory
+from carte_ai.configs.carte_configs import carte_singletable_baseline_mapping
+from carte_ai.configs.directory import config_directory
 
 
 # Normalization function of the results
