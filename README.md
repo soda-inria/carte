@@ -49,7 +49,7 @@ random_state = 1  # Set a random seed for reproducibility
 X_train, X_test, y_train, y_test = wina_pl(num_train, random_state)
 print("Wina Poland dataset:", X_train.shape, X_test.shape)
 ```
-![sample](images/data.png)
+![sample](images/data_wina.png)
 
 #### 2️⃣ Convert Table 2 Graph 🪵
 
