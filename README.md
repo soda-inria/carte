@@ -47,7 +47,7 @@ from carte_ai.data.load_data import *
 num_train = 128  # Example: set the number of training groups/entities
 random_state = 1  # Set a random seed for reproducibility
 X_train, X_test, y_train, y_test = wina_pl(num_train, random_state)
-print("Spotify dataset:", X_train.shape, X_test.shape)
+print("Wina Poland dataset:", X_train.shape, X_test.shape)
 ```
 ![sample](images/data.png)
 
