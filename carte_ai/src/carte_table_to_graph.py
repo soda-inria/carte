@@ -9,8 +9,9 @@ from torch_geometric.data import Data
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import PowerTransformer
 from sklearn.pipeline import make_pipeline
+from sklearn.feature_extraction import FeatureHasher  # Import FeatureHasher from scikit-learn
 from carte_ai.configs.directory import config_directory
-from skrub import MinHashEncoder  # change to skrub
+
 
 def _create_edge_index(num_nodes: int, edge_attr: torch.Tensor, undirected: bool = True, self_loop: bool = True):
     """
@@ -51,6 +52,7 @@ def _create_edge_index(num_nodes: int, edge_attr: torch.Tensor, undirected: bool
 
     return edge_index, edge_attr_
 
+
 class Table2GraphTransformer(TransformerMixin, BaseEstimator):
     """
     Transformer from tables to a list of graphs.
@@ -62,7 +64,7 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
     lm_model : str, optional
         Language model to use, by default "fasttext".
     n_components : int, optional
-        Number of components for MinHash encoder, by default 300.
+        Number of components for the encoder, by default 300.
     n_jobs : int, optional
         Number of jobs for parallel processing, by default 1.
     fasttext_model_path : str, optional
@@ -106,11 +108,19 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         self.col_names = self.cat_col_names + self.num_col_names
 
         self.num_transformer_ = PowerTransformer().set_output(transform="pandas")
+
         if self.lm_model == "minhash":
             self.name_transformer = make_pipeline(
-                MinHashEncoder(n_components=self.n_components, n_jobs=self.n_jobs),
+                FeatureHasher(n_features=self.n_components, input_type='string'),
                 PowerTransformer(),
             )
+            # Collect all unique names to fit the PowerTransformer
+            names_total = self.col_names
+            # Transform names using FeatureHasher
+            hashed_features = self.name_transformer.named_steps['featurehasher'].transform(names_total)
+            hashed_features_dense = hashed_features.toarray()
+            # Fit the PowerTransformer
+            self.name_transformer.named_steps['powertransformer'].fit(hashed_features_dense)
 
         # Ensure numerical columns exist before fitting the transformer
         if self.num_col_names:
@@ -140,7 +150,7 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         X_ = X.replace("\n", " ", regex=True)
         num_data = X_.shape[0]
 
-        y_ = torch.tensor(self.y_, dtype=torch.float16).reshape((num_data, 1)) if self.y_ is not None else None
+        y_ = torch.tensor(self.y_, dtype=torch.float32).reshape((num_data, 1)) if self.y_ is not None else None
 
         X_categorical = X_.select_dtypes(include="object").copy()
         X_categorical.columns = self.cat_col_names
@@ -180,7 +190,8 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
             if self.n_components != 300:
                 fasttext.util.reduce_model(self.lm_model_, self.n_components)
         elif self.lm_model == "minhash":
-            self.lm_model_ = MinHashEncoder(n_components=self.n_components, n_jobs=self.n_jobs)
+            # No need to load a model for FeatureHasher
+            pass
 
     def _transform_numerical(self, X):
         """
@@ -213,9 +224,14 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
             Transformed features for names.
         """
         if self.lm_model == "fasttext":
-            return np.array([self.lm_model_.get_sentence_vector(name) for name in names_total], dtype=np.float16)
+            return np.array([self.lm_model_.get_sentence_vector(name) for name in names_total], dtype=np.float32)
         elif self.lm_model == "minhash":
-            return self.name_transformer.fit_transform(names_total.reshape(-1, 1)).astype(np.float16)
+            # Transform names using FeatureHasher
+            hashed_features = self.name_transformer.named_steps['featurehasher'].transform(names_total)
+            hashed_features_dense = hashed_features.toarray()
+            # Apply PowerTransformer
+            transformed_features = self.name_transformer.named_steps['powertransformer'].transform(hashed_features_dense)
+            return transformed_features.astype(np.float32)
 
     def _graph_construct(self, data_cat, data_num, name_attr_total, name_dict, y, idx):
         """
@@ -246,22 +262,22 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         num_cat = len(data_cat)
         num_num = len(data_num)
 
-        edge_attr_cat = np.array([name_attr_total[name_dict[col]] for col in data_cat.index], dtype=np.float16)
-        edge_attr_num = np.array([name_attr_total[name_dict[col]] for col in data_num.index], dtype=np.float16)
+        edge_attr_cat = np.array([name_attr_total[name_dict[col]] for col in data_cat.index], dtype=np.float32)
+        edge_attr_num = np.array([name_attr_total[name_dict[col]] for col in data_num.index], dtype=np.float32)
 
-        x_cat = torch.tensor(np.array([name_attr_total[name_dict[val]] for val in data_cat]), dtype=torch.float16)
-        x_num = torch.tensor(data_num.values[:, None] * edge_attr_num, dtype=torch.float16)
+        x_cat = torch.tensor(np.array([name_attr_total[name_dict[val]] for val in data_cat]), dtype=torch.float32)
+        x_num = torch.tensor(data_num.values[:, None] * edge_attr_num, dtype=torch.float32)
 
         if x_cat.size(0) == 0:
-            x_cat = torch.empty((0, self.n_components), dtype=torch.float16)
-            edge_attr_cat = torch.empty((0, self.n_components), dtype=torch.float16)
+            x_cat = torch.empty((0, self.n_components), dtype=torch.float32)
+            edge_attr_cat = torch.empty((0, self.n_components), dtype=torch.float32)
         if x_num.size(0) == 0:
-            x_num = torch.empty((0, self.n_components), dtype=torch.float16)
-            edge_attr_num = torch.empty((0, self.n_components), dtype=torch.float16)
+            x_num = torch.empty((0, self.n_components), dtype=torch.float32)
+            edge_attr_num = torch.empty((0, self.n_components), dtype=torch.float32)
 
         x = torch.cat((x_cat, x_num))
         x = torch.cat((torch.ones((1, x.size(1))), x))
-        edge_attr = torch.tensor(np.vstack((edge_attr_cat, edge_attr_num)), dtype=torch.float16)
+        edge_attr = torch.tensor(np.vstack((edge_attr_cat, edge_attr_num)), dtype=torch.float32)
 
         num_nodes = num_cat + num_num + 1
         edge_index, edge_attr = _create_edge_index(num_nodes, edge_attr, False, True)

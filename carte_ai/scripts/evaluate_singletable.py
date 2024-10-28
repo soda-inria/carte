@@ -1,4 +1,4 @@
-"""Script for evalutating a model of choice for singletables."""
+"""Script for evaluating a model of choice for single tables."""
 
 # >>>
 if __name__ == "__main__":
@@ -20,18 +20,11 @@ import copy
 
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import MinMaxScaler
-from category_encoders import TargetEncoder
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder, OrdinalEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.decomposition import PCA
 from sklearn.model_selection import ParameterGrid
-from carte_ai.configs.directory import config_directory
-from carte_ai.configs.carte_configs import carte_datalist, carte_singletable_baselines
-from carte_ai.src.evaluate_utils import *
-from carte_ai.src.carte_estimator import CARTERegressor, CARTEClassifier
-from catboost import CatBoostRegressor, CatBoostClassifier
-from xgboost import XGBRegressor, XGBClassifier
-from tabpfn import TabPFNClassifier
+from category_encoders import TargetEncoder
 from sklearn.ensemble import (
     HistGradientBoostingRegressor,
     HistGradientBoostingClassifier,
@@ -41,6 +34,13 @@ from sklearn.ensemble import (
     BaggingClassifier,
 )
 from sklearn.linear_model import Ridge, LogisticRegression
+from carte_ai.configs.directory import config_directory
+from carte_ai.configs.carte_configs import carte_datalist, carte_singletable_baselines
+from carte_ai.src.evaluate_utils import *
+from carte_ai.src.carte_estimator import CARTERegressor, CARTEClassifier
+from catboost import CatBoostRegressor, CatBoostClassifier
+from xgboost import XGBRegressor, XGBClassifier
+from tabpfn import TabPFNClassifier
 from carte_ai.src.baseline_singletable_nn import (
     MLPRegressor,
     MLPClassifier,
@@ -129,9 +129,7 @@ def _prepare_tablevectorizer(
     random_state,
     estim_method,
 ):
-    """Preprocess with Tablevectorizer."""
-
-    from skrub import TableVectorizer
+    """Preprocess data using scikit-learn transformers."""
 
     data_ = data.copy()
     X_train, X_test, y_train, y_test = set_split(
@@ -140,43 +138,62 @@ def _prepare_tablevectorizer(
         num_train,
         random_state=random_state,
     )
-    num_col_names, cat_col_names = col_names_per_type(data, data_config["target_name"])
+    num_col_names, cat_col_names = col_names_per_type(
+        data, data_config["target_name"]
+    )
 
     # Set preprocessors for categorical and numerical
-    categorical_preprocessor = TableVectorizer(auto_cast=False, sparse_threshold=0)
     numerical_preprocessor = SimpleImputer(strategy="mean")
+
+    # For categorical data, use OneHotEncoder or OrdinalEncoder
+    categorical_preprocessor = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse=False))
+    ])
 
     # Set final pipeline for preprocessing depending on the method
     tree_based_methods = ["xgb", "histgb", "randomforest"]
     if estim_method in tree_based_methods:
         preprocessor_final = ColumnTransformer(
-            [
+            transformers=[
                 ("numerical", "passthrough", num_col_names),
-                ("categorical", categorical_preprocessor, cat_col_names),
+                (
+                    "categorical",
+                    OrdinalEncoder(
+                        handle_unknown="use_encoded_value", unknown_value=-1
+                    ),
+                    cat_col_names,
+                ),
             ]
         )
     elif estim_method in ["tabpfn"]:
         preprocessor = ColumnTransformer(
-            [
+            transformers=[
                 ("numerical", numerical_preprocessor, num_col_names),
-                ("categorical", categorical_preprocessor, cat_col_names),
+                (
+                    "categorical",
+                    OrdinalEncoder(
+                        handle_unknown="use_encoded_value", unknown_value=-1
+                    ),
+                    cat_col_names,
+                ),
             ]
         )
         preprocessor_final = Pipeline(
-            [
+            steps=[
                 ("preprocess", preprocessor),
                 ("missing", SimpleImputer(strategy="mean")),
             ]
         )
     else:
         preprocessor = ColumnTransformer(
-            [
+            transformers=[
                 ("numerical", numerical_preprocessor, num_col_names),
                 ("categorical", categorical_preprocessor, cat_col_names),
             ]
         )
         preprocessor_final = Pipeline(
-            [
+            steps=[
                 ("preprocess", preprocessor),
                 ("minmax", MinMaxScaler()),
                 ("missing", SimpleImputer(strategy="mean")),
@@ -210,7 +227,9 @@ def _prepare_target_encoder(
         num_train,
         random_state=random_state,
     )
-    num_col_names, cat_col_names = col_names_per_type(data, data_config["target_name"])
+    num_col_names, cat_col_names = col_names_per_type(
+        data, data_config["target_name"]
+    )
     if data_config["task"] == "regression":
         target_type = "continuous"
     else:
@@ -272,7 +291,7 @@ def _prepare_llm(
     num_train,
     random_state,
 ):
-    """Prepare the llm data. It loads the preprocessed data."""
+    """Prepare the LLM data. It loads the preprocessed data."""
     data_ = data.copy()
     data_.drop(columns=data_config["entity_name"], inplace=True)
     X_train, X_test, y_train, y_test = set_split(
@@ -432,7 +451,7 @@ def run_model(
     entity_name = data_config["entity_name"]
     task = data_config["task"]
     _, result_criterion = set_score_criterion(task)
-    cat_features = None  # overriden by prepare_... functions if needed
+    cat_features = None  # overridden by prepare_... functions if needed
 
     # Set methods
     method_parse = method.split("_")
@@ -583,14 +602,14 @@ def main(data_name, num_train, method, random_state, bagging, device):
         data_name_list = carte_datalist
     else:
         data_name_list = data_name
-        if isinstance(data_name_list, list) == False:
+        if not isinstance(data_name_list, list):
             data_name_list = [data_name_list]
 
     # Setting for train size
     if "all" in num_train:
         num_train = [32, 64, 128, 256, 512, 1024, 2048]
     else:
-        if isinstance(num_train, list) == False:
+        if not isinstance(num_train, list):
             num_train = [num_train]
             num_train = list(map(int, num_train))
         else:
@@ -615,14 +634,14 @@ def main(data_name, num_train, method, random_state, bagging, device):
         method_list.sort()
     else:
         method_list = method
-        if isinstance(method_list, list) == False:
+        if not isinstance(method_list, list):
             method_list = [method_list]
 
     # Setting for random state
     if "all" in random_state:
         random_state = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     else:
-        if isinstance(random_state, list) == False:
+        if not isinstance(random_state, list):
             random_state = [random_state]
             random_state = list(map(int, random_state))
         else:
@@ -650,20 +669,20 @@ if __name__ == "__main__":
     # Set parser
     import argparse
 
-    parser = argparse.ArgumentParser(description="Evaluate model for singletables.")
+    parser = argparse.ArgumentParser(description="Evaluate model for single tables.")
     parser.add_argument(
         "-dn",
         "--data_name",
         nargs="+",
         type=str,
-        help="dataset to evaluate",
+        help="Dataset to evaluate",
     )
     parser.add_argument(
         "-nt",
         "--num_train",
         nargs="+",
         type=str,
-        help="Number of train",
+        help="Number of training samples",
     )
     parser.add_argument(
         "-m",
@@ -677,13 +696,13 @@ if __name__ == "__main__":
         "--random_state",
         nargs="+",
         type=str,
-        help="Random_state",
+        help="Random state",
     )
     parser.add_argument(
         "-b",
         "--bagging",
         type=str,
-        help="include bagging strategy for evaluation",
+        help="Include bagging strategy for evaluation",
     )
     parser.add_argument(
         "-dv",

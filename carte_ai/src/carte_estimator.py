@@ -1,6 +1,7 @@
 """CARTE estimators for regression and classification."""
 
 import torch
+import torch.cuda.amp as amp
 import numpy as np
 import pandas as pd
 import copy
@@ -128,6 +129,9 @@ class BaseCARTEEstimator(BaseEstimator):
             model_run_train.parameters(), lr=self.learning_rate
         )
 
+        # Initialize GradScaler
+        scaler = amp.GradScaler() 
+
         # Train model
         train_loader = DataLoader(ds_train, batch_size=self.batch_size, shuffle=False)
         valid_loss_best = 9e15
@@ -138,7 +142,7 @@ class BaseCARTEEstimator(BaseEstimator):
             desc=f"Model No. xx",
             disable=self.disable_pbar,
         ):
-            self._run_epoch(model_run_train, optimizer, train_loader)
+            self._run_epoch(model_run_train, optimizer, train_loader,scaler)
             valid_loss = self._eval(model_run_train, ds_valid_eval)
             if valid_loss < valid_loss_best:
                 valid_loss_best = valid_loss
@@ -151,32 +155,35 @@ class BaseCARTEEstimator(BaseEstimator):
         model_best_.eval()
         return model_best_, valid_loss_best
 
-    def _run_epoch(self, model, optimizer, train_loader):
+    def _run_epoch(self, model, optimizer, train_loader,scaler):
         """Run an epoch of the input model.
 
         Each epoch consists of steps that update the model and the optimizer.
         """
         model.train()
         for data in train_loader:  # Iterate in batches over the training dataset.
-            self._run_step(model, data, optimizer)
+            self._run_step(model, data, optimizer, scaler)
 
-    def _run_step(self, model, data, optimizer):
+    def _run_step(self, model, data, optimizer, scaler):
         """Run a step of the training.
 
         With each step, it updates the model and the optimizer.
         """
         optimizer.zero_grad()  # Clear gradients.
         data.to(self.device_)  # Send to device
-        out = model(data)  # Perform a single forward pass.
-        target = data.y  # Set target
-        if self.output_dim_ == 1:
-            out = out.view(-1).to(torch.float16)  # Reshape output and convert to float16
-            target = target.to(torch.float16)  # Convert target to float16
-        loss = self.criterion_(out, target)  # Compute the loss.
-        loss.backward()  # Derive gradients.
-        optimizer.step()  # Update parameters based on gradients.
 
-    # Within _eval function:
+        with amp.autocast():  # Enable autocasting
+            out = model(data)  # Perform a single forward pass.
+            target = data.y  # Set target
+            if self.output_dim_ == 1:
+                out = out.view(-1).to(torch.float32)  # Reshape output
+                target = target.to(torch.float32)  # Reshape target
+            loss = self.criterion_(out, target)  # Compute the loss.
+
+        scaler.scale(loss).backward()  # Scale the loss and backward pass
+        scaler.step(optimizer)  # Update parameters
+        scaler.update()  # Update the scaler for next iteration
+
     def _eval(self, model, ds_eval):
         """Run an evaluation of the input data on the input model.
 
@@ -184,25 +191,25 @@ class BaseCARTEEstimator(BaseEstimator):
         """
         with torch.no_grad():
             model.eval()
-            out = model(ds_eval)
-            target = ds_eval.y
-            if self.output_dim_ == 1:
-                out = out.view(-1).to(torch.float16)  # Convert output to float16
-                target = target.to(torch.float16)  # Convert target to float16
-            self.valid_loss_metric_.update(out, target)
-            loss_eval = self.valid_loss_metric_.compute()
-            loss_eval = loss_eval.detach().item()
-            if self.valid_loss_flag_ == "neg":
-                loss_eval = -1 * loss_eval
-            self.valid_loss_metric_.reset()
+            with amp.autocast():  # Enable autocasting
+                out = model(ds_eval)
+                target = ds_eval.y
+                if self.output_dim_ == 1:
+                    out = out.view(-1).to(torch.float32)
+                    target = target.to(torch.float32)
+                self.valid_loss_metric_.update(out, target)
+                loss_eval = self.valid_loss_metric_.compute()
+                loss_eval = loss_eval.detach().item()
+                if self.valid_loss_flag_ == "neg":
+                    loss_eval = -1 * loss_eval
+                self.valid_loss_metric_.reset()
         return loss_eval
-
 
     def _set_train_valid_split(self):
         """Train/validation split for the bagging strategy.
-        
+
         The style of split depends on the cross_validate parameter.
-        Reuturns the train/validation split with KFold cross-validation.
+        Returns the train/validation split with KFold cross-validation.
         """
 
         if self._estimator_type == "regressor":
@@ -210,23 +217,37 @@ class BaseCARTEEstimator(BaseEstimator):
                 n_splits = int(1 / self.val_size)
                 n_repeats = int(self.num_model / n_splits)
                 splitter = RepeatedKFold(
-                    n_splits=n_splits, n_repeats=n_repeats, random_state=self.random_state,
+                    n_splits=n_splits,
+                    n_repeats=n_repeats,
+                    random_state=self.random_state,
                 )
             else:
-                splitter = ShuffleSplit(n_splits = self.num_model, test_size=self.val_size, random_state=self.random_state)
+                splitter = ShuffleSplit(
+                    n_splits=self.num_model,
+                    test_size=self.val_size,
+                    random_state=self.random_state,
+                )
             splits = [
-                    (train_index, test_index)
-                    for train_index, test_index in splitter.split(np.arange(0, len(self.X_)))
-                ]
+                (train_index, test_index)
+                for train_index, test_index in splitter.split(
+                    np.arange(0, len(self.X_))
+                )
+            ]
         else:
             if self.cross_validate:
                 n_splits = int(1 / self.val_size)
                 n_repeats = int(self.num_model / n_splits)
                 splitter = RepeatedStratifiedKFold(
-                    n_splits=n_splits, n_repeats=n_repeats, random_state=self.random_state,
+                    n_splits=n_splits,
+                    n_repeats=n_repeats,
+                    random_state=self.random_state,
                 )
             else:
-                splitter = StratifiedShuffleSplit(n_splits = self.num_model, test_size=self.val_size, random_state=self.random_state)
+                splitter = StratifiedShuffleSplit(
+                    n_splits=self.num_model,
+                    test_size=self.val_size,
+                    random_state=self.random_state,
+                )
             splits = [
                 (train_index, test_index)
                 for train_index, test_index in splitter.split(
@@ -244,7 +265,9 @@ class BaseCARTEEstimator(BaseEstimator):
         """
         make_batch = Batch()
         with torch.no_grad():
-            ds_eval = make_batch.from_data_list(data, follow_batch=["edge_index"])
+            ds_eval = make_batch.from_data_list(
+                data, follow_batch=["edge_index"]
+            )
             ds_eval.to(self.device_)
         return ds_eval
 
@@ -258,7 +281,8 @@ class BaseCARTEEstimator(BaseEstimator):
         ds_predict_eval = self._set_data_eval(data=X)
         with torch.no_grad():
             out = [
-                model(ds_predict_eval).cpu().detach().numpy() for model in model_list
+                model(ds_predict_eval).cpu().detach().numpy()
+                for model in model_list
             ]
         out = np.array(out).squeeze().transpose()
         if len(model_list) != 1:
@@ -277,9 +301,7 @@ class BaseCARTEEstimator(BaseEstimator):
         return out
 
     def _set_task_specific_settings(self):
-        """Set task specific settings for regression and classfication.
-        """
-
+        """Set task specific settings for regression and classification."""
         if self._estimator_type == "regressor":
             if self.loss == "squared_error":
                 self.criterion_ = torch.nn.MSELoss()
@@ -305,13 +327,17 @@ class BaseCARTEEstimator(BaseEstimator):
                 self.valid_loss_metric_ = BinaryAUROC()
                 self.valid_loss_flag_ = "neg"
             elif self.scoring == "binary_entropy":
-                self.valid_loss_metric_ = BinaryNormalizedEntropy(from_logits = True)
+                self.valid_loss_metric_ = BinaryNormalizedEntropy(
+                    from_logits=True
+                )
                 self.valid_loss_flag_ = "neg"
             elif self.scoring == "auprc":
                 self.valid_loss_metric_ = BinaryAUPRC()
                 self.valid_loss_flag_ = "neg"
             if self.loss == "categorical_crossentropy":
-                self.valid_loss_metric_ = MulticlassAUROC(num_classes=self.output_dim_)
+                self.valid_loss_metric_ = MulticlassAUROC(
+                    num_classes=self.output_dim_
+                )
                 self.valid_loss_flag_ = "neg"
             self.classes_ = np.unique(self.y_)
         self.valid_loss_metric_.to(self.device_)
@@ -331,7 +357,7 @@ class BaseCARTEEstimator(BaseEstimator):
         model_config["hidden_dim"] = self.X_[0].x.size(1)
         model_config["ff_dim"] = self.X_[0].x.size(1)
         model_config["num_heads"] = 12
-        model_config["num_layers"] = self.num_layers-1
+        model_config["num_layers"] = self.num_layers - 1
         model_config["output_dim"] = self.output_dim_
         model_config["dropout"] = self.dropout
 
@@ -346,13 +372,19 @@ class BaseCARTEEstimator(BaseEstimator):
         # Load the pretrained weights if specified
         if self.load_pretrain and self.pretrained_model_path:
             # Load the pretrained model from the specified path
-            pretrain_model_dict = torch.load(self.pretrained_model_path, map_location=self.device_)
-            
+            pretrain_model_dict = torch.load(
+                self.pretrained_model_path, map_location=self.device_
+            )
+
             # Rename the keys containing "initial_x" to "initial_x_pretrain"
-            initial_x_keys = [key for key in pretrain_model_dict.keys() if "initial_x" in key]
+            initial_x_keys = [
+                key for key in pretrain_model_dict.keys() if "initial_x" in key
+            ]
             for key in initial_x_keys:
-                pretrain_model_dict[key + "_pretrain"] = pretrain_model_dict.pop(key)
-            
+                pretrain_model_dict[key + "_pretrain"] = pretrain_model_dict.pop(
+                    key
+                )
+
             # Load the state dict into the model
             model.load_state_dict(pretrain_model_dict, strict=False)
 

@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
     long_description = fh.read()
 
 requirements = [
-    "numpy", "pandas", "scipy", "scikit-learn", "skrub",
+    "numpy", "pandas", "scipy", "scikit-learn",
     "torch", "torch-geometric", "torcheval","catboost","fasttext","category-encoders","tabpfn","xgboost",
 ]
 
@@ -53,6 +53,6 @@ setup(
         'test': ['pytest', 'coverage'],  # Add your test requirements here
     },
     url='https://github.com/soda-inria/carte',
-    version='0.0.8',
+    version='0.0.12',
     zip_safe=False,
 )
