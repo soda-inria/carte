@@ -112,7 +112,11 @@ print(f"\nThe R2 score for CARTE:", "{:.4f}".format(score))
 
 ➡️ [installation instructions setup paper](INSTALL.md)
 
-### 04 CARTE-AI references 📚
+### 04 Contribute to the package 🚀
+
+➡️ [read the contributions guidelines](CONTRIBUTIONS.md)
+
+### 05 CARTE-AI references 📚
 
 ```
 @article{kim2024carte,
