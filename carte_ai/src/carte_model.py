@@ -1,11 +1,11 @@
 import math
 import torch
 import torch.nn as nn
-from typing import Tuple
 from torch import Tensor
 from torch_geometric.utils import softmax
 
-## CARTE - Attention and output calculation
+
+# CARTE - Attention and output calculation
 def _carte_calculate_attention(
     edge_index: Tensor, query: Tensor, key: Tensor, value: Tensor
 ):
@@ -13,17 +13,17 @@ def _carte_calculate_attention(
     attention = torch.sum(torch.mul(query[edge_index[0], :], key), dim=1)
     attention = attention / math.sqrt(query.size(1))
     attention = softmax(attention, edge_index[0])
-    
+
     # Generate the output
     src = torch.mul(attention, value.t()).t()
-    
+
     # Use torch.index_add_ to replace scatter function
     output = torch.zeros_like(query).index_add_(0, edge_index[0], src)
-    
+
     return output, attention
 
 
-## CARTE - output calculation with multi-head (message passing)
+# CARTE - output calculation with multi-head (message passing)
 def _carte_calculate_multihead_output(
     edge_index: Tensor,
     query: Tensor,
@@ -65,7 +65,7 @@ def _carte_calculate_multihead_output(
     return output, attention
 
 
-## CARTE - Attention Layer
+# CARTE - Attention Layer
 class CARTE_Attention(nn.Module):
     def __init__(
         self,
@@ -136,7 +136,7 @@ class CARTE_Attention(nn.Module):
             return output, edge_attr
 
 
-## CARTE - single encoding block
+# CARTE - single encoding block
 class CARTE_Block(nn.Module):
     def __init__(
         self,
@@ -202,7 +202,7 @@ class CARTE_Block(nn.Module):
             return x
 
 
-## CARTE - contrast block
+# CARTE - contrast block
 class CARTE_Contrast(nn.Module):
     def __init__(self):
         super().__init__()
@@ -216,7 +216,7 @@ class CARTE_Contrast(nn.Module):
         return x
 
 
-## CARTE - finetune base block
+# CARTE - finetune base block
 class CARTE_Base(nn.Module):
     def __init__(
         self,
@@ -224,7 +224,7 @@ class CARTE_Base(nn.Module):
         input_dim_e: int,
         hidden_dim: int,
         num_layers: int,
-        **block_args
+        **block_args,
     ):
         super(CARTE_Base, self).__init__()
 
@@ -268,7 +268,7 @@ class CARTE_Base(nn.Module):
             return x
 
 
-## CARTE - Pretrain Model
+# CARTE - Pretrain Model
 class CARTE_Pretrain(nn.Module):
     def __init__(
         self,
@@ -276,7 +276,7 @@ class CARTE_Pretrain(nn.Module):
         input_dim_e: int,
         hidden_dim: int,
         num_layers: int,
-        **block_args
+        **block_args,
     ):
         super(CARTE_Pretrain, self).__init__()
 
@@ -285,7 +285,7 @@ class CARTE_Pretrain(nn.Module):
             input_dim_e=input_dim_e,
             hidden_dim=hidden_dim,
             num_layers=num_layers,
-            **block_args
+            **block_args,
         )
 
         self.pretrain_classifier = nn.Sequential(
@@ -312,7 +312,7 @@ class CARTE_Pretrain(nn.Module):
         return x
 
 
-## CARTE - Downstream Model
+# CARTE - Downstream Model
 class CARTE_NN_Model(nn.Module):
     def __init__(
         self,
@@ -321,7 +321,7 @@ class CARTE_NN_Model(nn.Module):
         hidden_dim: int,
         output_dim: int,
         num_layers: int,
-        **block_args
+        **block_args,
     ):
         super(CARTE_NN_Model, self).__init__()
 
@@ -330,7 +330,7 @@ class CARTE_NN_Model(nn.Module):
             input_dim_e=input_dim_e,
             hidden_dim=hidden_dim,
             num_layers=num_layers,
-            **block_args
+            **block_args,
         )
 
         self.ft_classifier = nn.Sequential(
@@ -358,7 +358,7 @@ class CARTE_NN_Model(nn.Module):
         return x
 
 
-## CARTE - Downstream Ablation model
+# CARTE - Downstream Ablation model
 class CARTE_NN_Model_Ablation(nn.Module):
     def __init__(
         self,

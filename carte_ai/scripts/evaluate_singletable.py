@@ -138,18 +138,18 @@ def _prepare_tablevectorizer(
         num_train,
         random_state=random_state,
     )
-    num_col_names, cat_col_names = col_names_per_type(
-        data, data_config["target_name"]
-    )
+    num_col_names, cat_col_names = col_names_per_type(data, data_config["target_name"])
 
     # Set preprocessors for categorical and numerical
     numerical_preprocessor = SimpleImputer(strategy="mean")
 
     # For categorical data, use OneHotEncoder or OrdinalEncoder
-    categorical_preprocessor = Pipeline(steps=[
-        ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
-        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse=False))
-    ])
+    categorical_preprocessor = Pipeline(
+        steps=[
+            ("imputer", SimpleImputer(strategy="constant", fill_value="missing")),
+            ("onehot", OneHotEncoder(handle_unknown="ignore", sparse=False)),
+        ]
+    )
 
     # Set final pipeline for preprocessing depending on the method
     tree_based_methods = ["xgb", "histgb", "randomforest"]
@@ -227,9 +227,7 @@ def _prepare_target_encoder(
         num_train,
         random_state=random_state,
     )
-    num_col_names, cat_col_names = col_names_per_type(
-        data, data_config["target_name"]
-    )
+    num_col_names, cat_col_names = col_names_per_type(data, data_config["target_name"])
     if data_config["task"] == "regression":
         target_type = "continuous"
     else:

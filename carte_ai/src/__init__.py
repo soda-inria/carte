@@ -9,4 +9,3 @@ from carte_ai.src.visualization_utils import *
 from carte_ai.src.preprocess_utils import *
 from .carte_estimator import CARTERegressor, CARTEClassifier
 from .carte_table_to_graph import Table2GraphTransformer
-
