@@ -122,7 +122,7 @@ Desktop.ini
 # PyCharm working directory
 .idea/
 
-
+# related to carte-ai >>
 # Data
 data/data_multitable/
 data/data_singletable/
