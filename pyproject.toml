@@ -37,10 +37,7 @@ dependencies = [
     "torch",
     "torch-geometric",
     "torcheval",
-    "catboost",
     "fasttext",
-    "tabpfn",
-    "xgboost",
     "category-encoders",
 ]
 
