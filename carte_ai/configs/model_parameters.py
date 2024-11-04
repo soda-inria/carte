@@ -2,7 +2,6 @@
 Parameter distributions for hyperparameter optimization
 """
 
-import numpy as np
 from scipy.stats import loguniform, randint, uniform, norm
 import copy
 

@@ -108,7 +108,7 @@ class RESNET_Model(nn.Module):
         hidden_dim: int,
         output_dim: int,
         num_layers: int,
-        **block_args
+        **block_args,
     ):
         super(RESNET_Model, self).__init__()
 

@@ -37,11 +37,11 @@ dependencies = [
     "torch",
     "torch-geometric",
     "torcheval",
-    "catboost",
     "fasttext",
+    "category-encoders",
     "tabpfn",
     "xgboost",
-    "category-encoders",
+    "catboost",
 ]
 
 [project.urls]

@@ -1,13 +1,17 @@
 from pathlib import Path
 
 # Get the base path relative to this file's location
-base_path = Path(__file__).resolve().parent.parent  # This gives '/home/infres/gbrison/carte/carte_ai'
+base_path = (
+    Path(__file__).resolve().parent.parent
+)  # This gives '/home/infres/gbrison/carte/carte_ai'
 
 config_directory = dict()
 config_directory["base_path"] = base_path
 
 config_directory["data"] = str(base_path / "data/")
-config_directory["pretrained_model"] = str(base_path / "data/etc/kg_pretrained.pt")  # Correct path
+config_directory["pretrained_model"] = str(
+    base_path / "data/etc/kg_pretrained.pt"
+)  # Correct path
 config_directory["data_raw"] = str(base_path / "data/data_raw/")
 config_directory["data_singletable"] = str(base_path / "data/data_singletable/")
 config_directory["data_yago"] = str(base_path / "data/data_yago/")

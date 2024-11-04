@@ -1,4 +1,3 @@
-
 import numpy as np
 import pandas as pd
 
@@ -75,6 +74,7 @@ def set_score_criterion(task):
     score_criterion += ["inference_time"]
     score_criterion += ["run_time"]
     return scoring, score_criterion
+
 
 def shorten_param(param_name):
     """Shorten the param_names for column names in search results."""

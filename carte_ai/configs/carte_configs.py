@@ -1,6 +1,6 @@
 """Specific configurations for the CARTE paper."""
 
-## Dataset names
+# Dataset names
 carte_datalist = [
     "anime_planet",
     "babies_r_us",
@@ -55,7 +55,7 @@ carte_datalist = [
     "zomato",
 ]
 
-## Dictionary of baseline methods
+# Dictionary of baseline methods
 carte_singletable_baselines = dict()
 carte_singletable_baselines["full"] = [
     "carte-gnn",
@@ -110,7 +110,7 @@ carte_multitable_baselines = [
 ]
 
 
-## Dictionary of method mapping
+# Dictionary of method mapping
 carte_singletable_baseline_mapping = dict()
 carte_singletable_baseline_mapping["carte-gnn"] = "CARTE"
 
@@ -137,7 +137,7 @@ carte_singletable_baseline_mapping["tabpfn"] = "TabPFN"
 # Bagging
 carte_singletable_baseline_mapping["bagging"] = "Bagging"
 
-## Colors for visualization
+# Colors for visualization
 carte_singletable_color_palette = dict()
 carte_singletable_color_palette["CARTE"] = "C3"
 carte_singletable_color_palette["CatBoost"] = "C0"
@@ -151,7 +151,7 @@ carte_singletable_color_palette["TabVec-ResNet"] = "C8"
 carte_singletable_color_palette["TabVec-MLP"] = "C9"
 carte_singletable_color_palette["TarEnc-TabPFN"] = "#A9561E"
 
-## Markers for visualization
+# Markers for visualization
 carte_singletable_markers = dict()
 carte_singletable_markers["CARTE"] = "o"
 carte_singletable_markers["TabVec-XGB"] = (4, 0, 45)

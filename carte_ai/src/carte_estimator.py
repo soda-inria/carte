@@ -18,7 +18,14 @@ from torcheval.metrics import (
 from torch import Tensor
 from torch_geometric.loader import DataLoader
 from torch_geometric.data import Batch
-from sklearn.model_selection import RepeatedKFold, RepeatedStratifiedKFold, ShuffleSplit, StratifiedShuffleSplit, ParameterGrid, train_test_split
+from sklearn.model_selection import (
+    RepeatedKFold,
+    RepeatedStratifiedKFold,
+    ShuffleSplit,
+    StratifiedShuffleSplit,
+    ParameterGrid,
+    train_test_split,
+)
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 from sklearn.utils.validation import check_is_fitted, check_random_state
 from joblib import Parallel, delayed
@@ -103,7 +110,7 @@ class BaseCARTEEstimator(BaseEstimator):
         # Store the required results that may be used later
         self.model_list_ = [model for (model, _) in result_fit]
         self.valid_loss_ = [valid_loss for (_, valid_loss) in result_fit]
-        self.weights_ = np.array([1/self.num_model]*self.num_model)
+        self.weights_ = np.array([1 / self.num_model] * self.num_model)
         self.is_fitted_ = True
 
         return self
@@ -130,7 +137,7 @@ class BaseCARTEEstimator(BaseEstimator):
         )
 
         # Initialize GradScaler
-        scaler = amp.GradScaler() 
+        scaler = amp.GradScaler()
 
         # Train model
         train_loader = DataLoader(ds_train, batch_size=self.batch_size, shuffle=False)
@@ -142,7 +149,7 @@ class BaseCARTEEstimator(BaseEstimator):
             desc=f"Model No. xx",
             disable=self.disable_pbar,
         ):
-            self._run_epoch(model_run_train, optimizer, train_loader,scaler)
+            self._run_epoch(model_run_train, optimizer, train_loader, scaler)
             valid_loss = self._eval(model_run_train, ds_valid_eval)
             if valid_loss < valid_loss_best:
                 valid_loss_best = valid_loss
@@ -155,7 +162,7 @@ class BaseCARTEEstimator(BaseEstimator):
         model_best_.eval()
         return model_best_, valid_loss_best
 
-    def _run_epoch(self, model, optimizer, train_loader,scaler):
+    def _run_epoch(self, model, optimizer, train_loader, scaler):
         """Run an epoch of the input model.
 
         Each epoch consists of steps that update the model and the optimizer.
@@ -265,9 +272,7 @@ class BaseCARTEEstimator(BaseEstimator):
         """
         make_batch = Batch()
         with torch.no_grad():
-            ds_eval = make_batch.from_data_list(
-                data, follow_batch=["edge_index"]
-            )
+            ds_eval = make_batch.from_data_list(data, follow_batch=["edge_index"])
             ds_eval.to(self.device_)
         return ds_eval
 
@@ -281,8 +286,7 @@ class BaseCARTEEstimator(BaseEstimator):
         ds_predict_eval = self._set_data_eval(data=X)
         with torch.no_grad():
             out = [
-                model(ds_predict_eval).cpu().detach().numpy()
-                for model in model_list
+                model(ds_predict_eval).cpu().detach().numpy() for model in model_list
             ]
         out = np.array(out).squeeze().transpose()
         if len(model_list) != 1:
@@ -327,17 +331,13 @@ class BaseCARTEEstimator(BaseEstimator):
                 self.valid_loss_metric_ = BinaryAUROC()
                 self.valid_loss_flag_ = "neg"
             elif self.scoring == "binary_entropy":
-                self.valid_loss_metric_ = BinaryNormalizedEntropy(
-                    from_logits=True
-                )
+                self.valid_loss_metric_ = BinaryNormalizedEntropy(from_logits=True)
                 self.valid_loss_flag_ = "neg"
             elif self.scoring == "auprc":
                 self.valid_loss_metric_ = BinaryAUPRC()
                 self.valid_loss_flag_ = "neg"
             if self.loss == "categorical_crossentropy":
-                self.valid_loss_metric_ = MulticlassAUROC(
-                    num_classes=self.output_dim_
-                )
+                self.valid_loss_metric_ = MulticlassAUROC(num_classes=self.output_dim_)
                 self.valid_loss_flag_ = "neg"
             self.classes_ = np.unique(self.y_)
         self.valid_loss_metric_.to(self.device_)
@@ -381,9 +381,7 @@ class BaseCARTEEstimator(BaseEstimator):
                 key for key in pretrain_model_dict.keys() if "initial_x" in key
             ]
             for key in initial_x_keys:
-                pretrain_model_dict[key + "_pretrain"] = pretrain_model_dict.pop(
-                    key
-                )
+                pretrain_model_dict[key + "_pretrain"] = pretrain_model_dict.pop(key)
 
             # Load the state dict into the model
             model.load_state_dict(pretrain_model_dict, strict=False)
@@ -484,7 +482,6 @@ class CARTERegressor(RegressorMixin, BaseCARTEEstimator):
             device=device,
             disable_pbar=disable_pbar,
             pretrained_model_path=pretrained_model_path,
-            
         )
 
         self.loss = loss
@@ -503,10 +500,10 @@ class CARTERegressor(RegressorMixin, BaseCARTEEstimator):
         y : ndarray, shape (n_samples,)
             The predicted values.
         """
-    
+
         check_is_fitted(self, "is_fitted_")
 
-        out = self._generate_output(X=X, model_list = self.model_list_, weights=None)
+        out = self._generate_output(X=X, model_list=self.model_list_, weights=None)
 
         return out
 
@@ -596,7 +593,7 @@ class CARTEClassifier(ClassifierMixin, BaseCARTEEstimator):
             n_jobs=n_jobs,
             device=device,
             disable_pbar=disable_pbar,
-            pretrained_model_path=pretrained_model_path
+            pretrained_model_path=pretrained_model_path,
         )
 
         self.loss = loss
@@ -669,7 +666,7 @@ class CARTEClassifier(ClassifierMixin, BaseCARTEEstimator):
             The raw predicted values.
         """
 
-        out = self._generate_output(X=X, model_list = self.model_list_, weights=None)
+        out = self._generate_output(X=X, model_list=self.model_list_, weights=None)
 
         return out
 
@@ -786,7 +783,7 @@ class BaseCARTEMultitableEstimator(BaseCARTEEstimator):
             n_jobs=n_jobs,
             device=device,
             disable_pbar=disable_pbar,
-            pretrained_model_path = pretrained_model_path,
+            pretrained_model_path=pretrained_model_path,
             cross_validate=False,  # overridden
         )
 
@@ -1081,7 +1078,7 @@ class CARTEMultitableRegressor(RegressorMixin, BaseCARTEMultitableEstimator):
             n_jobs=n_jobs,
             device=device,
             disable_pbar=disable_pbar,
-            pretrained_model_path = pretrained_model_path,
+            pretrained_model_path=pretrained_model_path,
             source_data=source_data,
             target_fraction=target_fraction,
         )
@@ -1090,8 +1087,8 @@ class CARTEMultitableRegressor(RegressorMixin, BaseCARTEMultitableEstimator):
         self.scoring = scoring
 
     def predict(self, X):
-        """Predict values for X. 
-        
+        """Predict values for X.
+
         Returns the weighted average of the singletable model and all pairwise model with 1-source.
 
         Parameters
@@ -1205,7 +1202,7 @@ class CARTEMultitableClassifer(ClassifierMixin, BaseCARTEMultitableEstimator):
             n_jobs=n_jobs,
             device=device,
             disable_pbar=disable_pbar,
-            pretrained_model_path = pretrained_model_path,
+            pretrained_model_path=pretrained_model_path,
             source_data=source_data,
             target_fraction=target_fraction,
         )
@@ -1304,7 +1301,7 @@ class CARTE_AblationRegressor(CARTERegressor):
 
     This estimator is GNN-based model compatible with the CARTE pretrained model.
     Note that this is an implementation for the ablation study of CARTE
-    
+
     Parameters
     ----------
     ablation_method : {'exclude-edge', 'exclude-attention', 'exclude-attention-edge'}, default='exclude-edge'
@@ -1348,6 +1345,7 @@ class CARTE_AblationRegressor(CARTERegressor):
     disable_pbar : bool, default=True
         Indicates whether to show progress bars for the training process.
     """
+
     def __init__(
         self,
         *,
@@ -1390,7 +1388,7 @@ class CARTE_AblationRegressor(CARTERegressor):
             n_jobs=n_jobs,
             device=device,
             disable_pbar=disable_pbar,
-            pretrained_model_path = pretrained_model_path,
+            pretrained_model_path=pretrained_model_path,
         )
 
         self.ablation_method = ablation_method
@@ -1412,7 +1410,7 @@ class CARTE_AblationRegressor(CARTERegressor):
         model_config["hidden_dim"] = self.X_[0].x.size(1)
         model_config["ff_dim"] = self.X_[0].x.size(1)
         model_config["num_heads"] = 12
-        model_config["num_layers"] = self.num_layers-1
+        model_config["num_layers"] = self.num_layers - 1
         model_config["output_dim"] = self.output_dim_
         model_config["dropout"] = self.dropout
 
@@ -1428,7 +1426,8 @@ class CARTE_AblationRegressor(CARTERegressor):
         if self.load_pretrain and self.pretrained_model_path:
             # Use the specified pretrained model path
             model.load_state_dict(
-                torch.load(self.pretrained_model_path, map_location=self.device_), strict=False
+                torch.load(self.pretrained_model_path, map_location=self.device_),
+                strict=False,
             )
         # Freeze the pretrained weights if specified
         if self.freeze_pretrain:
@@ -1449,7 +1448,7 @@ class CARTE_AblationClassifier(CARTEClassifier):
 
     This estimator is GNN-based model compatible with the CARTE pretrained model.
     Note that this is an implementation for the ablation study of CARTE
-    
+
     Parameters
     ----------
     ablation_method : {'exclude-edge', 'exclude-attention', 'exclude-attention-edge'}, default='exclude-edge'
@@ -1493,6 +1492,7 @@ class CARTE_AblationClassifier(CARTEClassifier):
     disable_pbar : bool, default=True
         Indicates whether to show progress bars for the training process.
     """
+
     def __init__(
         self,
         *,
@@ -1535,7 +1535,7 @@ class CARTE_AblationClassifier(CARTEClassifier):
             n_jobs=n_jobs,
             device=device,
             disable_pbar=disable_pbar,
-            pretrained_model_path = pretrained_model_path,
+            pretrained_model_path=pretrained_model_path,
         )
 
         self.ablation_method = ablation_method
@@ -1557,7 +1557,7 @@ class CARTE_AblationClassifier(CARTEClassifier):
         model_config["hidden_dim"] = self.X_[0].x.size(1)
         model_config["ff_dim"] = self.X_[0].x.size(1)
         model_config["num_heads"] = 12
-        model_config["num_layers"] = self.num_layers-1
+        model_config["num_layers"] = self.num_layers - 1
         model_config["output_dim"] = self.output_dim_
         model_config["dropout"] = self.dropout
 
@@ -1572,13 +1572,17 @@ class CARTE_AblationClassifier(CARTEClassifier):
         # Load the pretrained weights if specified
         if self.load_pretrain and self.pretrained_model_path:
             # Load the pretrained model from the specified path
-            pretrain_model_dict = torch.load(self.pretrained_model_path, map_location=self.device_)
-            
+            pretrain_model_dict = torch.load(
+                self.pretrained_model_path, map_location=self.device_
+            )
+
             # Rename the keys containing "initial_x" to "initial_x_pretrain"
-            initial_x_keys = [key for key in pretrain_model_dict.keys() if "initial_x" in key]
+            initial_x_keys = [
+                key for key in pretrain_model_dict.keys() if "initial_x" in key
+            ]
             for key in initial_x_keys:
                 pretrain_model_dict[key + "_pretrain"] = pretrain_model_dict.pop(key)
-            
+
             # Load the state dict into the model
             model.load_state_dict(pretrain_model_dict, strict=False)
 
