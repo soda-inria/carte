@@ -139,22 +139,6 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
 
         self.num_transformer_ = PowerTransformer().set_output(transform="pandas")
 
-        if self.lm_model == "minhash":
-            self.name_transformer = make_pipeline(
-                FeatureHasher(n_features=self.n_components, input_type="string"),
-                PowerTransformer(),
-            )
-            # Collect all unique names to fit the PowerTransformer
-            names_total = self.col_names
-            # Transform names using FeatureHasher
-            hashed_features = self.name_transformer.named_steps[
-                "featurehasher"
-            ].transform(names_total)
-            hashed_features_dense = hashed_features.toarray()
-            # Fit the PowerTransformer
-            self.name_transformer.named_steps["powertransformer"].fit(
-                hashed_features_dense
-            )
 
         # Ensure numerical columns exist before fitting the transformer
         if self.num_col_names:
@@ -238,9 +222,7 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
             self.lm_model_ = fasttext.load_model(self.fasttext_model_path)
             if self.n_components != 300:
                 fasttext.util.reduce_model(self.lm_model_, self.n_components)
-        elif self.lm_model == "minhash":
-            # No need to load a model for FeatureHasher
-            pass
+
 
     def _transform_numerical(self, X):
         """
@@ -277,17 +259,6 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
                 [self.lm_model_.get_sentence_vector(name) for name in names_total],
                 dtype=np.float32,
             )
-        elif self.lm_model == "minhash":
-            # Transform names using FeatureHasher
-            hashed_features = self.name_transformer.named_steps[
-                "featurehasher"
-            ].transform(names_total)
-            hashed_features_dense = hashed_features.toarray()
-            # Apply PowerTransformer
-            transformed_features = self.name_transformer.named_steps[
-                "powertransformer"
-            ].transform(hashed_features_dense)
-            return transformed_features.astype(np.float32)
 
     def _graph_construct(self, data_cat, data_num, name_attr_total, name_dict, y, idx):
         """

@@ -62,7 +62,7 @@ def test_invalid_fasttext_model_path(dummy_data):
         transformer = Table2GraphTransformer(lm_model="fasttext")
         transformer.fit(dummy_data)
 
-@pytest.mark.parametrize("lm_model", ["fasttext", "minhash"])
+@pytest.mark.parametrize("lm_model", ["fasttext"])
 def test_table_to_graph_with_different_lm_models(dummy_data, lm_model):
     """Test Table2GraphTransformer with different language models."""
     transformer = Table2GraphTransformer(lm_model=lm_model, n_components=100, fasttext_model_path="path/to/fasttext.bin")
