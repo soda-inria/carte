@@ -39,6 +39,9 @@ dependencies = [
     "torcheval",
     "fasttext",
     "category-encoders",
+    "tabpfn",
+    "xgboost",
+    "catboost",
 ]
 
 [project.urls]
