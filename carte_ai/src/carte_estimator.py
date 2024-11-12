@@ -182,6 +182,8 @@ class BaseCARTEEstimator(BaseEstimator):
         with amp.autocast():  # Enable autocasting
             out = model(data)  # Perform a single forward pass.
             target = data.y  # Set target
+            if self.loss == "categorical_crossentropy":
+                target = target.to(torch.long)
             if self.output_dim_ == 1:
                 out = out.view(-1).to(torch.float32)  # Reshape output
                 target = target.to(torch.float32)  # Reshape target
@@ -201,6 +203,8 @@ class BaseCARTEEstimator(BaseEstimator):
             with amp.autocast():  # Enable autocasting
                 out = model(ds_eval)
                 target = ds_eval.y
+                if self.loss == "categorical_crossentropy":
+                    target = target.to(torch.long)
                 if self.output_dim_ == 1:
                     out = out.view(-1).to(torch.float32)
                     target = target.to(torch.float32)
@@ -289,6 +293,14 @@ class BaseCARTEEstimator(BaseEstimator):
                 model(ds_predict_eval).cpu().detach().numpy() for model in model_list
             ]
         out = np.array(out).squeeze().transpose()
+
+        # Transform according to loss
+        if self.loss == "categorical_crossentropy":
+            if len(model_list) != 1:
+                out = out.transpose((1, 2, 0))
+            else:
+                out = out.transpose()
+
         if len(model_list) != 1:
             out = np.average(out, weights=weights, axis=1)
 
@@ -305,7 +317,8 @@ class BaseCARTEEstimator(BaseEstimator):
         return out
 
     def _set_task_specific_settings(self):
-        """Set task specific settings for regression and classification."""
+        """Set task specific settings for regression and classfication."""
+
         if self._estimator_type == "regressor":
             if self.loss == "squared_error":
                 self.criterion_ = torch.nn.MSELoss()
@@ -319,28 +332,26 @@ class BaseCARTEEstimator(BaseEstimator):
                 self.valid_loss_flag_ = "neg"
             self.output_dim_ = 1
         elif self._estimator_type == "classifier":
+            self.classes_ = np.unique(self.y_)
             if self.loss == "binary_crossentropy":
                 self.criterion_ = torch.nn.BCEWithLogitsLoss()
+                self.output_dim_ = 1
+                if self.scoring == "auroc":
+                    self.valid_loss_metric_ = BinaryAUROC()
+                    self.valid_loss_flag_ = "neg"
+                elif self.scoring == "binary_entropy":
+                    self.valid_loss_metric_ = BinaryNormalizedEntropy(from_logits=True)
+                    self.valid_loss_flag_ = "neg"
+                elif self.scoring == "auprc":
+                    self.valid_loss_metric_ = BinaryAUPRC()
+                    self.valid_loss_flag_ = "neg"
             elif self.loss == "categorical_crossentropy":
                 self.criterion_ = torch.nn.CrossEntropyLoss()
-            self.output_dim_ = len(np.unique(self.y_))
-            if self.output_dim_ == 2:
-                self.output_dim_ -= 1
-                self.criterion_ = torch.nn.BCEWithLogitsLoss()
-            if self.scoring == "auroc":
-                self.valid_loss_metric_ = BinaryAUROC()
-                self.valid_loss_flag_ = "neg"
-            elif self.scoring == "binary_entropy":
-                self.valid_loss_metric_ = BinaryNormalizedEntropy(from_logits=True)
-                self.valid_loss_flag_ = "neg"
-            elif self.scoring == "auprc":
-                self.valid_loss_metric_ = BinaryAUPRC()
-                self.valid_loss_flag_ = "neg"
-            if self.loss == "categorical_crossentropy":
+                self.output_dim_ = len(np.unique(self.y_))
                 self.valid_loss_metric_ = MulticlassAUROC(num_classes=self.output_dim_)
                 self.valid_loss_flag_ = "neg"
-            self.classes_ = np.unique(self.y_)
         self.valid_loss_metric_.to(self.device_)
+
 
     def _load_model(self):
         """Load the CARTE model for training.
