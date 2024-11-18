@@ -1,0 +1,212 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CARTE-AI Documentation &mdash; CARTE-AI 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="carte_ai" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            CARTE-AI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">carte_ai</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">CARTE-AI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">CARTE-AI Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="carte-ai-documentation">
+<h1>Welcome to CARTE-AI documentation 📚!<a class="headerlink" href="#carte-ai-documentation" title="Link to this heading"></a></h1>
+<p><img src="_static/outline_carte.jpg" alt="CARTE Outline" width="500"></p>
+
+
+  <!-- Introduction -->
+  <p>CARTE is a pretrained model for tabular data by treating each table row as a star graph and training a graph transformer on top of this representation.</p>
+
+  <!-- Colab Examples -->
+  <h2>Colab Examples (Give it a test):</h2>
+  <a href="https://colab.research.google.com/drive/1PeltEmNLehQ26VQtFJhl7OxnzCS8rPMT?usp=sharing">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab">
+  </a>
+  <ul>
+    <li>CARTERegressor on Wine Poland dataset</li>
+    <li>CARTEClassifier on Spotify dataset</li>
+  </ul>
+
+  <!-- Installation Section -->
+  <h2>01 Install 🚀</h2>
+  <p>The library has been tested on Linux, MacOSX, and Windows.</p>
+  <p>CARTE-AI can be installed from <a href="https://pypi.org/project/carte-ai">PyPI</a>:</p>
+  <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+  <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">CARTE-AI</span>
+  </pre></div>
+  </div>
+ 
+  <hr class="docutils" />
+  <section id="example-of-use-of-the-library">
+  <h2>Example of use of the library<a class="headerlink" href="#example-of-use-of-the-library" title="Link to this heading"></a></h2>
+  <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">carte_ai</span>
+  </pre></div>
+  </div>
+
+  <p><strong>1️⃣ Load the Data 💽</strong></p>
+  <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+  <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+  <span class="kn">from</span> <span class="nn">carte_ai.data.load_data</span> <span class="kn">import</span> <span class="n">wina_pl</span>
+  
+  <span class="n">num_train</span> <span class="o">=</span> <span class="mi">128</span>  <span class="c1"># Example: set the number of training groups/entities</span>
+  <span class="n">random_state</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Set a random seed for reproducibility</span>
+  <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">wina_pl</span><span class="p">(</span><span class="n">num_train</span><span class="p">,</span> <span class="n">random_state</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">"Wina Poland dataset:"</span><span class="p">,</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+  </pre></div></div>
+  
+  <img src="_static/data_wina.png" />
+  <p><strong>2️⃣ Convert Table 2 Graph 🪵</strong></p>
+  <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+  <span class="kn">import</span> <span class="nn">fasttext</span>
+  <span class="kn">from</span> <span class="nn">huggingface_hub</span> <span class="kn">import</span> <span class="n">hf_hub_download</span>
+  <span class="kn">from</span> <span class="nn">carte_ai</span> <span class="kn">import</span> <span class="n">Table2GraphTransformer</span>
+  
+  <span class="n">model_path</span> <span class="o">=</span> <span class="n">hf_hub_download</span><span class="p">(</span><span class="n">repo_id</span><span class="o">=</span><span class="s2">"hi-paris/fastText"</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">"cc.en.300.bin"</span><span class="p">)</span>
+  
+  <span class="n">preprocessor</span> <span class="o">=</span> <span class="n">Table2GraphTransformer</span><span class="p">(</span><span class="n">fasttext_model_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">)</span>
+  
+  <span class="c1"># Fit and transform the training data</span>
+  <span class="n">X_train</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_train</span><span class="p">)</span>
+  
+  <span class="c1"># Transform the test data</span>
+  <span class="n">X_test</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+  </pre></div></div>
+
+  <img src="_static/t2g.png" />
+  
+  <p><strong>3️⃣ Make Predictions🔮</strong></p>
+  <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">carte_ai</span> <span class="kn">import</span> <span class="n">CARTERegressor</span><span class="p">,</span> <span class="n">CARTEClassifier</span>
+
+  <span class="c1"># Define some parameters</span>
+  <span class="n">fixed_params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+  <span class="n">fixed_params</span><span class="p">[</span><span class="s2">&quot;num_model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># 10 models for the bagging strategy</span>
+  <span class="n">fixed_params</span><span class="p">[</span><span class="s2">&quot;disable_pbar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># True if you want cleanness</span>
+  <span class="n">fixed_params</span><span class="p">[</span><span class="s2">&quot;random_state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">fixed_params</span><span class="p">[</span><span class="s2">&quot;device&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span>
+  <span class="n">fixed_params</span><span class="p">[</span><span class="s2">&quot;n_jobs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+  <span class="n">fixed_params</span><span class="p">[</span><span class="s2">&quot;pretrained_model_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_directory</span><span class="p">[</span><span class="s2">&quot;pretrained_model&quot;</span><span class="p">]</span>
+
+  <span class="c1"># Define the estimator and run fit/predict</span>
+  <span class="n">estimator</span> <span class="o">=</span> <span class="n">CARTERegressor</span><span class="p">(**</span><span class="n">fixed_params</span><span class="p">)</span> <span class="c1"># CARTERegressor for Regression</span>
+  <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+  <span class="n">y_pred</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+  <span class="c1"># Obtain the r2 score on predictions</span>
+  <span class="n">score</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;\nThe R2 score for CARTE:&quot;</span><span class="p">,</span> <span class="s2">&quot;{:.4f}&quot;</span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="n">score</span><span class="p">))</span>
+  </pre></div></div>
+
+  <img src="_static/performance.png" />
+
+
+
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">carte_ai</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="carte_ai.html">carte_ai package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="carte_ai.configs.html">carte_ai.configs package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="carte_ai.data.html">carte_ai.data package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="carte_ai.scripts.html">carte_ai.scripts package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="carte_ai.src.html">carte_ai.src package</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-right" title="carte_ai" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Myung Jun Kim, Leo Grinsztajn, Gaël Varoquaux.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
