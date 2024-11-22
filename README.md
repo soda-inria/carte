@@ -2,7 +2,8 @@
 [![PyPI Version](https://img.shields.io/pypi/v/carte-ai)](https://pypi.org/project/carte-ai/)
 [![Python Version](https://img.shields.io/pypi/pyversions/carte-ai)](https://pypi.org/project/carte-ai/)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+
 
 
 # CARTE: <br />Pretraining and Transfer for Tabular Learning
