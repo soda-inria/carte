@@ -1,176 +1,181 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>carte_ai.data package &mdash; CARTE-AI 1.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-
-  
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=8d563738"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="carte_ai.scripts package" href="carte_ai.scripts.html" />
-    <link rel="prev" title="carte_ai.configs package" href="carte_ai.configs.html" /> 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>carte_ai.data package &mdash; CARTE-AI Documentation</title>
+  <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+  <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+  <style>
+    pre {
+        background-color: #f4f4f4;
+        padding: 10px;
+        border-radius: 5px;
+        overflow-x: auto;
+    }
+    code {
+        font-family: Consolas, "Courier New", monospace;
+    }
+    .variable-name {
+        color: #D9534F;
+        font-weight: bold;
+        background-color: #f4f4f4;
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
+  </style>
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            CARTE-AI
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">carte_ai</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="carte_ai.html">carte_ai package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="carte_ai.configs.html">carte_ai.configs package</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">carte_ai.data package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-carte_ai.data.load_data">carte_ai.data.load_data module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#carte_ai.data.load_data.load_parquet_config"><code class="docutils literal notranslate"><span class="pre">load_parquet_config()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#carte_ai.data.load_data.set_split"><code class="docutils literal notranslate"><span class="pre">set_split()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#carte_ai.data.load_data.spotify"><code class="docutils literal notranslate"><span class="pre">spotify()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#carte_ai.data.load_data.wina_pl"><code class="docutils literal notranslate"><span class="pre">wina_pl()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#carte_ai.data.load_data.wine_dot_com_prices"><code class="docutils literal notranslate"><span class="pre">wine_dot_com_prices()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#carte_ai.data.load_data.wine_vivino_price"><code class="docutils literal notranslate"><span class="pre">wine_vivino_price()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#module-carte_ai.data">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="carte_ai.scripts.html">carte_ai.scripts package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="carte_ai.src.html">carte_ai.src package</a></li>
-</ul>
-</li>
-</ul>
-
+        <a href="index.html" class="icon icon-home">CARTE-AI</a>
+        <div role="search">
+          <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+            <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+          </form>
+        </div>
+        <div class="wy-menu wy-menu-vertical" role="navigation">
+          <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+          <ul class="current">
+            <li class="toctree-l1 current"><a class="reference internal" href="modules.html">carte_ai</a>
+              <ul>
+                <li class="toctree-l2 current"><a class="reference internal" href="#">carte_ai.data package</a></li>
+              </ul>
+            </li>
+          </ul>
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">CARTE-AI</a>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" aria-label="Mobile navigation menu">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">CARTE-AI</a>
       </nav>
-
       <div class="wy-nav-content">
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">carte_ai</a></li>
-          <li class="breadcrumb-item"><a href="carte_ai.html">carte_ai package</a></li>
-      <li class="breadcrumb-item active">carte_ai.data package</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/carte_ai.data.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="carte-ai-data-package">
-<h1>carte_ai.data package<a class="headerlink" href="#carte-ai-data-package" title="Link to this heading"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
-</section>
-<section id="module-carte_ai.data.load_data">
-<span id="carte-ai-data-load-data-module"></span><h2>carte_ai.data.load_data module<a class="headerlink" href="#module-carte_ai.data.load_data" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="carte_ai.data.load_data.load_parquet_config">
-<span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span><span class="sig-name descname"><span class="pre">load_parquet_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#carte_ai.data.load_data.load_parquet_config" title="Link to this definition"></a></dt>
-<dd><p>Helper function to load parquet and config JSON for a given dataset.</p>
-</dd></dl>
+            <div itemprop="articleBody">
+              <section id="carte-ai-data-package">
+                <h1>carte_ai.data package<a class="headerlink" href="#carte-ai-data-package" title="Link to this heading"></a></h1>
+                <section id="module-carte_ai.data.load_data">
+                  <h2>carte_ai.data.load_data module<a class="headerlink" href="#module-carte_ai.data.load_data" title="Link to this heading"></a></h2>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="carte_ai.data.load_data.set_split">
-<span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span><span class="sig-name descname"><span class="pre">set_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#carte_ai.data.load_data.set_split" title="Link to this definition"></a></dt>
-<dd><p>Helper function to split dataset into train and test.</p>
-</dd></dl>
+                  <!-- Spotify dataset -->
+                  <dl class="py function">
+                    <dt class="sig sig-object py" id="carte_ai.data.load_data.spotify">
+                      <span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span>
+                      <span class="sig-name descname">spotify</span><span class="sig-paren">()</span>
+                      <a class="headerlink" href="#carte_ai.data.load_data.spotify" title="Link to this definition"></a>
+                    </dt>
+                    <dd>
+                      <p>Load and split the Spotify dataset.</p>
+                      <p>This dataset contains information on over 600,000 Spotify tracks, including audio features and popularity metrics.</p>
+                      <p><strong>Variables:</strong></p>
+                      <ul>
+                        <li><span class="variable-name">track_id</span>: Unique identifier for the track.</li>
+                        <li><span class="variable-name">artists</span>: Name(s) of the artist(s).</li>
+                        <li><span class="variable-name">album_name</span>: Name of the album.</li>
+                        <li><span class="variable-name">track_name</span>: Name of the track.</li>
+                        <li><span class="variable-name">popularity</span>: Popularity score of the track.</li>
+                        <li><span class="variable-name">duration_ms</span>: Duration of the track in milliseconds.</li>
+                        <li><span class="variable-name">danceability</span>: Danceability score (0.0 to 1.0).</li>
+                        <li><span class="variable-name">energy</span>: Energy score (0.0 to 1.0).</li>
+                      </ul>
+                      <p><strong>Examples:</strong></p>
+                      <pre><code>from carte_ai.data.load_data import spotify
+df = spotify()
+print(df.head())</code></pre>
+                    </dd>
+                  </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="carte_ai.data.load_data.spotify">
-<span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span><span class="sig-name descname"><span class="pre">spotify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#carte_ai.data.load_data.spotify" title="Link to this definition"></a></dt>
-<dd><p>Load and split Spotify dataset.</p>
-</dd></dl>
+                  <!-- Wina_PL dataset -->
+                  <dl class="py function">
+                    <dt class="sig sig-object py" id="carte_ai.data.load_data.wina_pl">
+                      <span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span>
+                      <span class="sig-name descname">wina_pl</span><span class="sig-paren">()</span>
+                      <a class="headerlink" href="#carte_ai.data.load_data.wina_pl" title="Link to this definition"></a>
+                    </dt>
+                    <dd>
+                      <p>Load and split the Wina_PL dataset.</p>
+                      <p>This dataset includes data on wine prices and reviews from Poland.</p>
+                      <p><strong>Variables:</strong></p>
+                      <ul>
+                        <li><span class="variable-name">wine_id</span>: Unique identifier for the wine.</li>
+                        <li><span class="variable-name">price</span>: Price of the wine.</li>
+                        <li><span class="variable-name">rating</span>: User rating for the wine.</li>
+                      </ul>
+                      <p><strong>Examples:</strong></p>
+                      <pre><code>from carte_ai.data.load_data import wina_pl
+df = wina_pl()
+print(df.head())</code></pre>
+                    </dd>
+                  </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="carte_ai.data.load_data.wina_pl">
-<span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span><span class="sig-name descname"><span class="pre">wina_pl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#carte_ai.data.load_data.wina_pl" title="Link to this definition"></a></dt>
-<dd><p>Load and split Wina_PL dataset.</p>
-</dd></dl>
+                  <!-- Wine.com Prices dataset -->
+                  <dl class="py function">
+                    <dt class="sig sig-object py" id="carte_ai.data.load_data.wine_dot_com_prices">
+                      <span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span>
+                      <span class="sig-name descname">wine_dot_com_prices</span><span class="sig-paren">()</span>
+                      <a class="headerlink" href="#carte_ai.data.load_data.wine_dot_com_prices" title="Link to this definition"></a>
+                    </dt>
+                    <dd>
+                      <p>Load and split the Wine.com Prices dataset.</p>
+                      <p>This dataset contains price information for wines listed on Wine.com.</p>
+                      <p><strong>Variables:</strong></p>
+                      <ul>
+                        <li><span class="variable-name">wine_name</span>: Name of the wine.</li>
+                        <li><span class="variable-name">price</span>: Price of the wine.</li>
+                        <li><span class="variable-name">rating</span>: User rating for the wine.</li>
+                      </ul>
+                      <p><strong>Examples:</strong></p>
+                      <pre><code>from carte_ai.data.load_data import wine_dot_com_prices
+df = wine_dot_com_prices()
+print(df.head())</code></pre>
+                    </dd>
+                  </dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="carte_ai.data.load_data.wine_dot_com_prices">
-<span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span><span class="sig-name descname"><span class="pre">wine_dot_com_prices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#carte_ai.data.load_data.wine_dot_com_prices" title="Link to this definition"></a></dt>
-<dd><p>Load and split Wine.com prices dataset.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="carte_ai.data.load_data.wine_vivino_price">
-<span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span><span class="sig-name descname"><span class="pre">wine_vivino_price</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#carte_ai.data.load_data.wine_vivino_price" title="Link to this definition"></a></dt>
-<dd><p>Load and split Vivino wine prices dataset.</p>
-</dd></dl>
-
-</section>
-<section id="module-carte_ai.data">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-carte_ai.data" title="Link to this heading"></a></h2>
-</section>
-</section>
-
-
-           </div>
+                  <!-- Wine Vivino Prices dataset -->
+                  <dl class="py function">
+                    <dt class="sig sig-object py" id="carte_ai.data.load_data.wine_vivino_price">
+                      <span class="sig-prename descclassname"><span class="pre">carte_ai.data.load_data.</span></span>
+                      <span class="sig-name descname">wine_vivino_price</span><span class="sig-paren">()</span>
+                      <a class="headerlink" href="#carte_ai.data.load_data.wine_vivino_price" title="Link to this definition"></a>
+                    </dt>
+                    <dd>
+                      <p>Load and split the Wine Vivino Prices dataset.</p>
+                      <p>This dataset includes prices and reviews for wines available on Vivino.</p>
+                      <p><strong>Variables:</strong></p>
+                      <ul>
+                        <li><span class="variable-name">wine_id</span>: Unique identifier for the wine.</li>
+                        <li><span class="variable-name">price</span>: Price of the wine.</li>
+                        <li><span class="variable-name">review_score</span>: User review score for the wine.</li>
+                      </ul>
+                      <p><strong>Examples:</strong></p>
+                      <pre><code>from carte_ai.data.load_data import wine_vivino_price
+df = wine_vivino_price()
+print(df.head())</code></pre>
+                    </dd>
+                  </dl>
+                </section>
+              </section>
+            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="carte_ai.configs.html" class="btn btn-neutral float-left" title="carte_ai.configs package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="carte_ai.scripts.html" class="btn btn-neutral float-right" title="carte_ai.scripts package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2024, Myung Jun Kim, Leo Grinsztajn, Gaël Varoquaux.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
+          <footer>
+            <div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+              <a href="carte_ai.html" class="btn btn-neutral float-left">Previous</a>
+              <a href="carte_ai.scripts.html" class="btn btn-neutral float-right">Next</a>
+            </div>
+            <hr/>
+            <div role="contentinfo">
+              <p>&#169; Copyright 2024, Myung Jun Kim, Leo Grinsztajn, Gaël Varoquaux.</p>
+            </div>
+          </footer>
         </div>
       </div>
     </section>
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
 </body>
 </html>
