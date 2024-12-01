@@ -119,7 +119,7 @@ print(f"\nThe R2 score for CARTE:", "{:.4f}".format(score))
 
 ### 05 Star History ⭐️
 
-[![Star History Chart](https://api.star-history.com/svg?repos=soda-inria/carte&type=Date)]
+![Star History Chart](https://api.star-history.com/svg?repos=soda-inria/carte&type=Date)
 
 ### 06 CARTE-AI references 📚
 
