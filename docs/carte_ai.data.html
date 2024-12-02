@@ -12,9 +12,12 @@
         padding: 10px;
         border-radius: 5px;
         overflow-x: auto;
+        text-align: left;
     }
     code {
         font-family: Consolas, "Courier New", monospace;
+        line-height: 1.4;
+        text-align: left;
     }
     .variable-name {
         color: #D9534F;
@@ -99,20 +102,71 @@ print(df.head())</code></pre>
                       <a class="headerlink" href="#carte_ai.data.load_data.wina_pl" title="Link to this definition"></a>
                     </dt>
                     <dd>
-                      <p>Load and split the Wina_PL dataset.</p>
-                      <p>This dataset includes data on wine prices and reviews from Poland.</p>
+                      <p>Load and explore the <strong>Wina_PL</strong> dataset, which contains detailed information about wine prices and attributes in the Polish market.</p>
+                      <p>This dataset is ideal for analysis and machine learning tasks related to wine classification, pricing, and preferences.</p>
+
                       <p><strong>Variables:</strong></p>
                       <ul>
-                        <li><span class="variable-name">wine_id</span>: Unique identifier for the wine.</li>
-                        <li><span class="variable-name">price</span>: Price of the wine.</li>
-                        <li><span class="variable-name">rating</span>: User rating for the wine.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">name</span>: Name of the wine.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">country</span>: Country of origin.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">region</span>: Region where the wine is produced.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">appellation</span>: Controlled origin label.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">vineyard</span>: Vineyard producing the wine.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">vintage</span>: Year of production.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">volume</span>: Bottle volume in milliliters.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">ABV</span>: Alcohol by volume (percentage).</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">serving_temperature</span>: Recommended serving temperature.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">wine_type</span>: Type of wine (e.g., red, white).</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">taste</span>: Wine taste profile (e.g., dry, sweet).</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">style</span>: Style of the wine (e.g., full-bodied).</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">vegan</span>: Whether the wine is vegan-friendly.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">natural</span>: Indicates if the wine is natural.</li>
+                        <li><span class="variable-name" style="color: #d9534f; background-color: #f7f7f7; padding: 2px 6px; border-radius: 3px;">grapes</span>: Main grape varieties used.</li>
                       </ul>
-                      <p><strong>Examples:</strong></p>
-                      <pre><code>from carte_ai.data.load_data import wina_pl
-df = wina_pl()
-print(df.head())</code></pre>
+
+                      <p><strong>Example Usage:</strong></p>
+                      <div style="position: relative; padding: 5px; border-radius: 6px; font-family: Consolas, 'Courier New', monospace; overflow-x: auto; border: 1px solid #ddd; width: 100%; box-sizing: border-box; margin: 0;">
+                        <!-- Copy Button -->
+                        <button onclick="copyCode(this)" style="position: absolute; top: 5px; right: 5px; background-color: #007bff; color: white; border: none; padding: 3px 6px; font-size: 10px; border-radius: 4px; cursor: pointer;">
+                          Copy
+                        </button>
+                        <!-- Code Block -->
+                        <code id="codeBlock" style="white-space: pre-wrap; display: block; margin: 0; padding: 0; text-align: left;">
+                      <span style="color: #0000FF; font-weight: bold;">from</span> <span style="color: #228B22;">carte_ai.data.load_data</span> <span style="color: #0000FF; font-weight: bold;">import</span> <span>wina_pl</span>
+                      
+                      <span style="color: #6c757d;"># Load the dataset</span>
+                      <span>df</span> <span style="color: #DD0000; font-weight: bold;">=</span> <span>wina_pl</span><span>()</span>
+                      
+                      <span style="color: #6c757d;"># Display the first few rows</span>
+                      <span>print</span><span>(df.head())</span>
+                        </code>
+                      </div>
+                      
+                      <script>
+                        function copyCode(button) {
+                          // Find the code block
+                          const codeBlock = button.parentElement.querySelector('code');
+                          const codeText = codeBlock.innerText;
+                      
+                          // Copy to clipboard
+                          navigator.clipboard.writeText(codeText).then(() => {
+                            // Provide feedback
+                            button.textContent = 'Copied!';
+                            setTimeout(() => {
+                              button.textContent = 'Copy';
+                            }, 2000);
+                          }).catch(err => {
+                            console.error('Failed to copy code: ', err);
+                          });
+                        }
+                      </script>
+                      
+
+                      <p>For more details, visit the <a href="https://www.kaggle.com/datasets/skamlo/wine-price-on-polish-market" target="_blank">Kaggle dataset page</a>.</p>
                     </dd>
                   </dl>
+
+
 
                   <!-- Wine.com Prices dataset -->
                   <dl class="py function">
