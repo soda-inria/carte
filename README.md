@@ -19,7 +19,7 @@ CARTE is a pretrained model for tabular data by treating each table row as a sta
 * CARTERegressor on Wine Poland dataset
 * CARTEClassifier on Spotify dataset
   
-Other datasets are available for testing ➡️ 
+Other datasets are available for testing: [datasets](https://huggingface.co/datasets/inria-soda/carte-benchmark/tree/main/data_raw)
 
 ### 01 Install 🚀
 
