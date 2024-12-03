@@ -3,7 +3,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/carte-ai)](https://pypi.org/project/carte-ai/)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Benchmark-yellow)](https://huggingface.co/datasets/inria-soda/carte-benchmark)
 
 
 # CARTE: <br />Pretraining and Transfer for Tabular Learning
@@ -19,7 +19,7 @@ CARTE is a pretrained model for tabular data by treating each table row as a sta
 * CARTERegressor on Wine Poland dataset
 * CARTEClassifier on Spotify dataset
   
-Other datasets are available for testing ➡️ [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Model%20on%20HF-yellow)](https://huggingface.co/datasets/inria-soda/carte-benchmark)
+Other datasets are available for testing ➡️ 
 
 ### 01 Install 🚀
 
