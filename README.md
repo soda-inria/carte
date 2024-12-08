@@ -3,6 +3,7 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/carte-ai)](https://pypi.org/project/carte-ai/)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+![Code Coverage](https://img.shields.io/badge/coverage-81%25-brightgreen)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Benchmark-yellow)](https://huggingface.co/datasets/inria-soda/carte-benchmark)
 
 
