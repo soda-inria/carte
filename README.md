@@ -5,6 +5,8 @@
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 ![Code Coverage](https://img.shields.io/badge/coverage-81%25-brightgreen)
 [![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Benchmark-yellow)](https://huggingface.co/datasets/inria-soda/carte-benchmark)
+[![arXiv](https://img.shields.io/badge/arXiv-2402.16785-blue.svg)](https://arxiv.org/pdf/2402.16785)
+
 
 
 # CARTE: <br />Pretraining and Transfer for Tabular Learning
