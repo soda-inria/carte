@@ -187,9 +187,9 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
             X_numerical = self._transform_numerical(X[num_cols_exist])
             #print(f"Transformed numerical columns: {X_numerical.head()}")
             # Check mean and variance for each column
-            for col in num_cols_exist:
-                mean = X_numerical[col].mean()
-                variance = X_numerical[col].var()
+            #for col in num_cols_exist:
+            #    mean = X_numerical[col].mean()
+            #    variance = X_numerical[col].var()
                 #print(f"Column: {col}, Mean: {mean:.6f}, Variance: {variance:.6f}")
 
         data_graph = [
