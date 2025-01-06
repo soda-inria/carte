@@ -9,17 +9,24 @@ from torch_geometric.utils import softmax
 def _carte_calculate_attention(
     edge_index: Tensor, query: Tensor, key: Tensor, value: Tensor
 ):
+    ## Fix to work on cpu and gpu provided by Ayoub Kachkach
     # Calculate the scaled-dot product attention
     attention = torch.sum(torch.mul(query[edge_index[0], :], key), dim=1)
     attention = attention / math.sqrt(query.size(1))
     attention = softmax(attention, edge_index[0])
-
+    
+    # Ensure `attention` and `value` have the same dtype
+    attention = attention.to(value.dtype)
+    
     # Generate the output
     src = torch.mul(attention, value.t()).t()
-
+    
+    # Ensure `src` and `query` have the same dtype
+    src = src.to(query.dtype)
+    
     # Use torch.index_add_ to replace scatter function
     output = torch.zeros_like(query).index_add_(0, edge_index[0], src)
-
+    
     return output, attention
 
 
