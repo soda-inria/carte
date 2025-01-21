@@ -122,14 +122,23 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
             self._load_lm_model()
 
         # Use original column names without lowercasing to avoid mismatches
-        self.cat_col_names = list(
-            X.select_dtypes(include="object")
-            .columns.str.replace("\n", " ", regex=True)
-        )
-        self.num_col_names = list(
-            X.select_dtypes(exclude="object")
-            .columns.str.replace("\n", " ", regex=True)
-        )
+        cat_col_names = X.select_dtypes(include="object")
+        if not cat_col_names.empty:
+            self.cat_col_names = list(
+                cat_col_names.columns.astype(str).str.replace("\n", " ", regex=True)
+            )
+        else:
+            self.cat_col_names = []
+
+        # num_col_names = X.select_dtypes(exclude="object").astype(str)
+        num_col_names = X.select_dtypes(exclude="object")
+        if not num_col_names.empty:
+            self.num_col_names = list(
+                num_col_names.columns.astype(str).str.replace("\n", " ", regex=True)
+            )
+        else:
+            self.num_col_names = []
+
         self.col_names = self.cat_col_names + self.num_col_names
 
         self.num_transformer_ = PowerTransformer().set_output(transform="pandas")
@@ -284,7 +293,9 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         data : torch_geometric.data.Data
             Graph data object.
         """
-        data_cat = data_cat.dropna().str.lower()
+        data_cat = data_cat.dropna()
+        if not data_cat.empty:
+            data_cat = data_cat.str.lower()
         data_num = data_num.dropna()
         num_cat = len(data_cat)
         num_num = len(data_num)
