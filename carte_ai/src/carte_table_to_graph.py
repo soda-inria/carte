@@ -130,7 +130,6 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         else:
             self.cat_col_names = []
 
-        # num_col_names = X.select_dtypes(exclude="object").astype(str)
         num_col_names = X.select_dtypes(exclude="object")
         if not num_col_names.empty:
             self.num_col_names = list(
