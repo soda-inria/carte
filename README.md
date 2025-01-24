@@ -32,6 +32,7 @@ CARTE-AI can be installed from [PyPI](https://pypi.org/project/carte-ai):
 
 <pre>
 pip install carte-ai
+pip install huggingface_hub
 </pre>
 
 #### Post installation check
