@@ -1,3 +1,4 @@
+import torch  # fixes #18
 from carte_ai.src.baseline_multitable import *
 from carte_ai.src.baseline_singletable_nn import *
 from carte_ai.src.carte_estimator import *
