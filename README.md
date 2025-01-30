@@ -24,6 +24,11 @@ CARTE is a pretrained model for tabular data by treating each table row as a sta
   
 Other datasets are available for testing: [datasets](https://huggingface.co/datasets/inria-soda/carte-benchmark/tree/main/data_raw)
 
+
+> [!WARNING]
+> This library is currently in a phase of active development. All features are subject to change without prior notice. If you are interested in collaborating, please feel free to reach out by opening an issue or starting a discussion.
+
+
 ### 01 Install 🚀
 
 The library has been tested on Linux, MacOSX and Windows.
