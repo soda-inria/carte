@@ -292,17 +292,7 @@ class BaseCARTEEstimator(BaseEstimator):
             out = [
                 model(ds_predict_eval).cpu().detach().numpy() for model in model_list
             ]
-        out = np.array(out).squeeze().transpose()
-
-        # Transform according to loss
-        if self.loss == "categorical_crossentropy":
-            if len(model_list) != 1:
-                out = out.transpose((1, 2, 0))
-            else:
-                out = out.transpose()
-
-        if len(model_list) != 1:
-            out = np.average(out, weights=weights, axis=1)
+        out = np.average(out, weights=weights, axis=0)
 
         # Change if the task is classification
         if self.loss == "binary_crossentropy":
@@ -314,6 +304,10 @@ class BaseCARTEEstimator(BaseEstimator):
         if np.isnan(out).sum() > 0:
             mean_pred = np.mean(self.y_)
             out[np.isnan(out)] = mean_pred
+
+        if out.ndim == 2 and out.shape[1] == 1:
+            out = out.squeeze(axis=1)  # we don't want to squeeze first axis
+
         return out
 
     def _set_task_specific_settings(self):
