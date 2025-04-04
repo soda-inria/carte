@@ -9,10 +9,26 @@ from torch_geometric.data import Data
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import PowerTransformer
 from sklearn.pipeline import make_pipeline
-from sklearn.feature_extraction import (
-    FeatureHasher,
-)  # Import FeatureHasher from scikit-learn
+from sklearn.feature_extraction import FeatureHasher  # Import FeatureHasher from scikit-learn
 from carte_ai.configs.directory import config_directory
+from joblib import Parallel, delayed
+
+# Module-level cache for fasttext models
+_FASTTEXT_MODEL_CACHE = {}
+
+def get_cached_fasttext_model(model_path: str, n_components: int):
+    """
+    Load the FastText model from cache if available.
+    If not, load it from disk, reduce dimensions if necessary, and cache it.
+    """
+    global _FASTTEXT_MODEL_CACHE
+    key = (model_path, n_components)
+    if key not in _FASTTEXT_MODEL_CACHE:
+        model = fasttext.load_model(model_path)
+        if n_components != 300:
+            fasttext.util.reduce_model(model, n_components)
+        _FASTTEXT_MODEL_CACHE[key] = model
+    return _FASTTEXT_MODEL_CACHE[key]
 
 def _create_edge_index(
     num_nodes: int,
@@ -146,7 +162,6 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         num_cols_exist = [col for col in self.num_col_names if col in X.columns]
         if num_cols_exist:
             self.num_transformer_.fit(X[num_cols_exist])
-            #print(f"Numerical columns fitted for normalization: {num_cols_exist}")
 
         self.is_fitted_ = True
         return self
@@ -181,27 +196,22 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         X_numerical = X_.select_dtypes(exclude="object").copy()
         X_numerical.columns = self.num_col_names
 
-        cat_names = (
-            pd.melt(X_categorical)["value"].dropna().astype(str).str.lower().unique()
-        )
+        # Gather all unique categorical names from the dataframe.
+        cat_names = pd.melt(X_categorical)["value"].dropna().astype(str).str.lower().unique()
         names_total = np.unique(np.hstack([self.col_names, cat_names]))
         name_dict = {name: idx for idx, name in enumerate(names_total)}
 
+        # Pre-compute the transformed features for names once.
         name_attr_total = self._transform_names(names_total)
 
-        # Use the original numerical column names for transformation
+        # Transform numerical data if those columns exist.
         num_cols_exist = [col for col in self.num_col_names if col in X.columns]
         if num_cols_exist:
             X_numerical = self._transform_numerical(X[num_cols_exist])
-            #print(f"Transformed numerical columns: {X_numerical.head()}")
-            # Check mean and variance for each column
-            #for col in num_cols_exist:
-            #    mean = X_numerical[col].mean()
-            #    variance = X_numerical[col].var()
-                #print(f"Column: {col}, Mean: {mean:.6f}, Variance: {variance:.6f}")
 
-        data_graph = [
-            self._graph_construct(
+        # Parallelize the graph construction to speed up processing.
+        data_graph = Parallel(n_jobs=self.n_jobs)(
+            delayed(self._graph_construct)(
                 X_categorical.iloc[idx],
                 X_numerical.iloc[idx],
                 name_attr_total,
@@ -210,11 +220,9 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
                 idx,
             )
             for idx in range(num_data)
-        ]
+        )
 
         self.y_ = None
-
-        # Manually trigger garbage collection after transforming data
         gc.collect()
 
         return data_graph
@@ -222,15 +230,14 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
     def _load_lm_model(self):
         """
         Load the language model for features of nodes and edges.
+        Uses a module-level cache to avoid re-loading the model.
         """
         if self.lm_model == "fasttext":
             if self.fasttext_model_path is None:
                 raise ValueError(
                     "The 'fasttext_model_path' must be provided when using 'fasttext' as lm_model."
                 )
-            self.lm_model_ = fasttext.load_model(self.fasttext_model_path)
-            if self.n_components != 300:
-                fasttext.util.reduce_model(self.lm_model_, self.n_components)
+            self.lm_model_ = get_cached_fasttext_model(self.fasttext_model_path, self.n_components)
 
     def _transform_numerical(self, X):
         """
@@ -330,7 +337,7 @@ class Table2GraphTransformer(TransformerMixin, BaseEstimator):
         )
 
         num_nodes = num_cat + num_num + 1
-        edge_index, edge_attr = _create_edge_index(num_nodes, edge_attr, False, True)
+        edge_index, edge_attr = _create_edge_index(num_nodes, edge_attr, undirected=False, self_loop=True)
 
         Z = torch.mul(edge_attr, x[edge_index[1]])
         x[0, :] = Z[edge_index[0] == 0].mean(dim=0)
