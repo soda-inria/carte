@@ -1,4 +1,4 @@
-[![Downloads](https://img.shields.io/pypi/dm/carte-ai)](https://pypi.org/project/carte-ai/)
+[![Downloads](https://pepy.tech/badge/carte-ai)](https://pepy.tech/project/carte-ai)
 [![PyPI Version](https://img.shields.io/pypi/v/carte-ai)](https://pypi.org/project/carte-ai/)
 [![Python Version](https://img.shields.io/pypi/pyversions/carte-ai)](https://pypi.org/project/carte-ai/)
 [![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
